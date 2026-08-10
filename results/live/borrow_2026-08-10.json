@@ -1,0 +1,2992 @@
+{
+  "source": "ftp2.interactivebrokers.com/usa.txt",
+  "file_stamp": "2026-08-10 18:59:43",
+  "fetched_at_utc": "2026-08-10T23:11:04+00:00",
+  "n_symbols_in_file": 19513,
+  "n_skipped_lines": 150,
+  "universe_size": 498,
+  "universe_covered": 496,
+  "fee_rate_percentiles_full_file": {
+    "50": 1.153,
+    "90": 17.6618,
+    "99": 168.4473
+  },
+  "names": {
+    "A": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 4100000,
+      "available_capped": false
+    },
+    "AAPL": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "ABBV": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "ABNB": {
+      "fee_rate": 0.2782,
+      "rebate_rate": 3.3518,
+      "available": 9800000,
+      "available_capped": false
+    },
+    "ABT": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "ACGL": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 5100000,
+      "available_capped": false
+    },
+    "ACN": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 5700000,
+      "available_capped": false
+    },
+    "ADBE": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 9600000,
+      "available_capped": false
+    },
+    "ADI": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 6300000,
+      "available_capped": false
+    },
+    "ADM": {
+      "fee_rate": 0.3215,
+      "rebate_rate": 3.3085,
+      "available": 6200000,
+      "available_capped": false
+    },
+    "ADP": {
+      "fee_rate": 0.3269,
+      "rebate_rate": 3.3031,
+      "available": 4000000,
+      "available_capped": false
+    },
+    "ADSK": {
+      "fee_rate": 0.3076,
+      "rebate_rate": 3.3224,
+      "available": 3400000,
+      "available_capped": false
+    },
+    "AEE": {
+      "fee_rate": 0.2873,
+      "rebate_rate": 3.3427,
+      "available": 2300000,
+      "available_capped": false
+    },
+    "AEP": {
+      "fee_rate": 0.2793,
+      "rebate_rate": 3.3507,
+      "available": 3900000,
+      "available_capped": false
+    },
+    "AES": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "AFL": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 5200000,
+      "available_capped": false
+    },
+    "AIG": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 9000000,
+      "available_capped": false
+    },
+    "AIZ": {
+      "fee_rate": 0.2782,
+      "rebate_rate": 3.3518,
+      "available": 500000,
+      "available_capped": false
+    },
+    "AJG": {
+      "fee_rate": 0.4194,
+      "rebate_rate": 3.2106,
+      "available": 2700000,
+      "available_capped": false
+    },
+    "AKAM": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 1000000,
+      "available_capped": false
+    },
+    "ALB": {
+      "fee_rate": 0.3229,
+      "rebate_rate": 3.3071,
+      "available": 1600000,
+      "available_capped": false
+    },
+    "ALGN": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 800000,
+      "available_capped": false
+    },
+    "ALL": {
+      "fee_rate": 0.2715,
+      "rebate_rate": 3.3585,
+      "available": 3300000,
+      "available_capped": false
+    },
+    "ALLE": {
+      "fee_rate": 0.4173,
+      "rebate_rate": 3.2127,
+      "available": 650000,
+      "available_capped": false
+    },
+    "AMAT": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 9500000,
+      "available_capped": false
+    },
+    "AMCR": {
+      "fee_rate": 0.5489,
+      "rebate_rate": 3.0812,
+      "available": 1900000,
+      "available_capped": false
+    },
+    "AMD": {
+      "fee_rate": 0.2989,
+      "rebate_rate": 3.3311,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "AME": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 3800000,
+      "available_capped": false
+    },
+    "AMGN": {
+      "fee_rate": 0.2652,
+      "rebate_rate": 3.3648,
+      "available": 5200000,
+      "available_capped": false
+    },
+    "AMP": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 1300000,
+      "available_capped": false
+    },
+    "AMT": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 7500000,
+      "available_capped": false
+    },
+    "AMZN": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "ANET": {
+      "fee_rate": 0.3757,
+      "rebate_rate": 3.2544,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "AON": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 2600000,
+      "available_capped": false
+    },
+    "AOS": {
+      "fee_rate": 0.4183,
+      "rebate_rate": 3.2117,
+      "available": 300000,
+      "available_capped": false
+    },
+    "APA": {
+      "fee_rate": 0.3332,
+      "rebate_rate": 3.2968,
+      "available": 2900000,
+      "available_capped": false
+    },
+    "APD": {
+      "fee_rate": 0.279,
+      "rebate_rate": 3.351,
+      "available": 1700000,
+      "available_capped": false
+    },
+    "APH": {
+      "fee_rate": 0.2564,
+      "rebate_rate": 3.3736,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "APO": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 4500000,
+      "available_capped": false
+    },
+    "APP": {
+      "fee_rate": 0.268,
+      "rebate_rate": 3.362,
+      "available": 3900000,
+      "available_capped": false
+    },
+    "APTV": {
+      "fee_rate": 0.4044,
+      "rebate_rate": 3.2256,
+      "available": 2800000,
+      "available_capped": false
+    },
+    "ARE": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 5400000,
+      "available_capped": false
+    },
+    "ARES": {
+      "fee_rate": 0.5694,
+      "rebate_rate": 3.0606,
+      "available": 300000,
+      "available_capped": false
+    },
+    "ATO": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 2900000,
+      "available_capped": false
+    },
+    "AVB": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 2200000,
+      "available_capped": false
+    },
+    "AVGO": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "AVY": {
+      "fee_rate": 0.4137,
+      "rebate_rate": 3.2163,
+      "available": 1400000,
+      "available_capped": false
+    },
+    "AWK": {
+      "fee_rate": 0.3864,
+      "rebate_rate": 3.2436,
+      "available": 1200000,
+      "available_capped": false
+    },
+    "AXON": {
+      "fee_rate": 0.3131,
+      "rebate_rate": 3.3169,
+      "available": 1100000,
+      "available_capped": false
+    },
+    "AXP": {
+      "fee_rate": 0.255,
+      "rebate_rate": 3.375,
+      "available": 6300000,
+      "available_capped": false
+    },
+    "AZO": {
+      "fee_rate": 0.2782,
+      "rebate_rate": 3.3518,
+      "available": 200000,
+      "available_capped": false
+    },
+    "BA": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "BAC": {
+      "fee_rate": 0.3963,
+      "rebate_rate": 3.2337,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "BALL": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 5100000,
+      "available_capped": false
+    },
+    "BAX": {
+      "fee_rate": 0.4136,
+      "rebate_rate": 3.2164,
+      "available": 2400000,
+      "available_capped": false
+    },
+    "BBY": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 3800000,
+      "available_capped": false
+    },
+    "BDX": {
+      "fee_rate": 0.3756,
+      "rebate_rate": 3.2544,
+      "available": 2400000,
+      "available_capped": false
+    },
+    "BEN": {
+      "fee_rate": 0.4167,
+      "rebate_rate": 3.2133,
+      "available": 3200000,
+      "available_capped": false
+    },
+    "BG": {
+      "fee_rate": 0.2843,
+      "rebate_rate": 3.3457,
+      "available": 2900000,
+      "available_capped": false
+    },
+    "BIIB": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 2700000,
+      "available_capped": false
+    },
+    "BKNG": {
+      "fee_rate": 0.4909,
+      "rebate_rate": 3.1391,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "BKR": {
+      "fee_rate": 0.4262,
+      "rebate_rate": 3.2038,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "BLDR": {
+      "fee_rate": 0.2782,
+      "rebate_rate": 3.3518,
+      "available": 1100000,
+      "available_capped": false
+    },
+    "BLK": {
+      "fee_rate": 0.419,
+      "rebate_rate": 3.2111,
+      "available": 1600000,
+      "available_capped": false
+    },
+    "BMY": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "BNY": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "BR": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 2200000,
+      "available_capped": false
+    },
+    "BRO": {
+      "fee_rate": 0.4131,
+      "rebate_rate": 3.2169,
+      "available": 1800000,
+      "available_capped": false
+    },
+    "BSX": {
+      "fee_rate": 0.2782,
+      "rebate_rate": 3.3518,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "BX": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 7600000,
+      "available_capped": false
+    },
+    "BXP": {
+      "fee_rate": 0.2782,
+      "rebate_rate": 3.3518,
+      "available": 1100000,
+      "available_capped": false
+    },
+    "C": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "CAH": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 4500000,
+      "available_capped": false
+    },
+    "CARR": {
+      "fee_rate": 0.3597,
+      "rebate_rate": 3.2703,
+      "available": 8900000,
+      "available_capped": false
+    },
+    "CASY": {
+      "fee_rate": 0.2574,
+      "rebate_rate": 3.3726,
+      "available": 400000,
+      "available_capped": false
+    },
+    "CAT": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 4500000,
+      "available_capped": false
+    },
+    "CB": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 4500000,
+      "available_capped": false
+    },
+    "CBOE": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 2100000,
+      "available_capped": false
+    },
+    "CBRE": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 5200000,
+      "available_capped": false
+    },
+    "CCI": {
+      "fee_rate": 0.2751,
+      "rebate_rate": 3.3549,
+      "available": 6100000,
+      "available_capped": false
+    },
+    "CCL": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "CDNS": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 3000000,
+      "available_capped": false
+    },
+    "CDW": {
+      "fee_rate": 0.4089,
+      "rebate_rate": 3.2211,
+      "available": 1300000,
+      "available_capped": false
+    },
+    "CEG": {
+      "fee_rate": 0.2718,
+      "rebate_rate": 3.3582,
+      "available": 3200000,
+      "available_capped": false
+    },
+    "CF": {
+      "fee_rate": 0.3432,
+      "rebate_rate": 3.2868,
+      "available": 2000000,
+      "available_capped": false
+    },
+    "CFG": {
+      "fee_rate": 0.2782,
+      "rebate_rate": 3.3518,
+      "available": 9100000,
+      "available_capped": false
+    },
+    "CHD": {
+      "fee_rate": 0.2782,
+      "rebate_rate": 3.3518,
+      "available": 3200000,
+      "available_capped": false
+    },
+    "CHRW": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 2700000,
+      "available_capped": false
+    },
+    "CHTR": {
+      "fee_rate": 0.2906,
+      "rebate_rate": 3.3394,
+      "available": 650000,
+      "available_capped": false
+    },
+    "CI": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 4000000,
+      "available_capped": false
+    },
+    "CIEN": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 2300000,
+      "available_capped": false
+    },
+    "CINF": {
+      "fee_rate": 0.3093,
+      "rebate_rate": 3.3207,
+      "available": 1700000,
+      "available_capped": false
+    },
+    "CL": {
+      "fee_rate": 0.2563,
+      "rebate_rate": 3.3737,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "CLX": {
+      "fee_rate": 0.3943,
+      "rebate_rate": 3.2357,
+      "available": 200000,
+      "available_capped": false
+    },
+    "CMCSA": {
+      "fee_rate": 0.4135,
+      "rebate_rate": 3.2165,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "CME": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 5000000,
+      "available_capped": false
+    },
+    "CMG": {
+      "fee_rate": 0.3233,
+      "rebate_rate": 3.3067,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "CMI": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 1700000,
+      "available_capped": false
+    },
+    "CMS": {
+      "fee_rate": 0.4623,
+      "rebate_rate": 3.1678,
+      "available": 4100000,
+      "available_capped": false
+    },
+    "CNC": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "CNP": {
+      "fee_rate": 0.4136,
+      "rebate_rate": 3.2164,
+      "available": 1300000,
+      "available_capped": false
+    },
+    "COF": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 7600000,
+      "available_capped": false
+    },
+    "COHR": {
+      "fee_rate": 0.3107,
+      "rebate_rate": 3.3193,
+      "available": 3300000,
+      "available_capped": false
+    },
+    "COIN": {
+      "fee_rate": 0.253,
+      "rebate_rate": 3.377,
+      "available": 5900000,
+      "available_capped": false
+    },
+    "COO": {
+      "fee_rate": 0.4135,
+      "rebate_rate": 3.2165,
+      "available": 3600000,
+      "available_capped": false
+    },
+    "COP": {
+      "fee_rate": 0.2782,
+      "rebate_rate": 3.3518,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "COR": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 2100000,
+      "available_capped": false
+    },
+    "COST": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 5000000,
+      "available_capped": false
+    },
+    "CPAY": {
+      "fee_rate": 0.3399,
+      "rebate_rate": 3.2901,
+      "available": 800000,
+      "available_capped": false
+    },
+    "CPRT": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "CPT": {
+      "fee_rate": 0.4111,
+      "rebate_rate": 3.2189,
+      "available": 1700000,
+      "available_capped": false
+    },
+    "CRH": {
+      "fee_rate": 0.2862,
+      "rebate_rate": 3.3438,
+      "available": 6800000,
+      "available_capped": false
+    },
+    "CRL": {
+      "fee_rate": 0.2558,
+      "rebate_rate": 3.3742,
+      "available": 700000,
+      "available_capped": false
+    },
+    "CRM": {
+      "fee_rate": 0.3576,
+      "rebate_rate": 3.2724,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "CRWD": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "CSCO": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "CSGP": {
+      "fee_rate": 0.2782,
+      "rebate_rate": 3.3518,
+      "available": 6400000,
+      "available_capped": false
+    },
+    "CSX": {
+      "fee_rate": 0.4617,
+      "rebate_rate": 3.1683,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "CTAS": {
+      "fee_rate": 0.2782,
+      "rebate_rate": 3.3518,
+      "available": 3800000,
+      "available_capped": false
+    },
+    "CTSH": {
+      "fee_rate": 0.2782,
+      "rebate_rate": 3.3518,
+      "available": 9600000,
+      "available_capped": false
+    },
+    "CTVA": {
+      "fee_rate": 0.3865,
+      "rebate_rate": 3.2435,
+      "available": 8200000,
+      "available_capped": false
+    },
+    "CVNA": {
+      "fee_rate": 0.4165,
+      "rebate_rate": 3.2135,
+      "available": 5500000,
+      "available_capped": false
+    },
+    "CVS": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "CVX": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "D": {
+      "fee_rate": 0.4152,
+      "rebate_rate": 3.2148,
+      "available": 5600000,
+      "available_capped": false
+    },
+    "DAL": {
+      "fee_rate": 0.2914,
+      "rebate_rate": 3.3386,
+      "available": 7700000,
+      "available_capped": false
+    },
+    "DASH": {
+      "fee_rate": 0.4262,
+      "rebate_rate": 3.2038,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "DD": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 2200000,
+      "available_capped": false
+    },
+    "DDOG": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 4200000,
+      "available_capped": false
+    },
+    "DE": {
+      "fee_rate": 0.4132,
+      "rebate_rate": 3.2168,
+      "available": 2300000,
+      "available_capped": false
+    },
+    "DECK": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 3500000,
+      "available_capped": false
+    },
+    "DELL": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 4200000,
+      "available_capped": false
+    },
+    "DG": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 5500000,
+      "available_capped": false
+    },
+    "DGX": {
+      "fee_rate": 0.3065,
+      "rebate_rate": 3.3235,
+      "available": 1600000,
+      "available_capped": false
+    },
+    "DHI": {
+      "fee_rate": 0.3757,
+      "rebate_rate": 3.2544,
+      "available": 3200000,
+      "available_capped": false
+    },
+    "DHR": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 7500000,
+      "available_capped": false
+    },
+    "DIS": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "DLR": {
+      "fee_rate": 0.2612,
+      "rebate_rate": 3.3688,
+      "available": 6500000,
+      "available_capped": false
+    },
+    "DLTR": {
+      "fee_rate": 0.2782,
+      "rebate_rate": 3.3518,
+      "available": 3100000,
+      "available_capped": false
+    },
+    "DOC": {
+      "fee_rate": 0.3722,
+      "rebate_rate": 3.2578,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "DOV": {
+      "fee_rate": 0.3177,
+      "rebate_rate": 3.3123,
+      "available": 1700000,
+      "available_capped": false
+    },
+    "DOW": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "DPZ": {
+      "fee_rate": 0.4135,
+      "rebate_rate": 3.2165,
+      "available": 300000,
+      "available_capped": false
+    },
+    "DRI": {
+      "fee_rate": 0.2755,
+      "rebate_rate": 3.3545,
+      "available": 700000,
+      "available_capped": false
+    },
+    "DTE": {
+      "fee_rate": 0.4222,
+      "rebate_rate": 3.2078,
+      "available": 2400000,
+      "available_capped": false
+    },
+    "DUK": {
+      "fee_rate": 0.4135,
+      "rebate_rate": 3.2165,
+      "available": 7500000,
+      "available_capped": false
+    },
+    "DVA": {
+      "fee_rate": 0.4135,
+      "rebate_rate": 3.2165,
+      "available": 750000,
+      "available_capped": false
+    },
+    "DVN": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "DXCM": {
+      "fee_rate": 0.4099,
+      "rebate_rate": 3.2201,
+      "available": 6100000,
+      "available_capped": false
+    },
+    "EBAY": {
+      "fee_rate": 0.419,
+      "rebate_rate": 3.2111,
+      "available": 6800000,
+      "available_capped": false
+    },
+    "ECHO": {
+      "fee_rate": 0.2585,
+      "rebate_rate": 3.3715,
+      "available": 800000,
+      "available_capped": false
+    },
+    "ECL": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 2900000,
+      "available_capped": false
+    },
+    "ED": {
+      "fee_rate": 0.4135,
+      "rebate_rate": 3.2165,
+      "available": 5700000,
+      "available_capped": false
+    },
+    "EFX": {
+      "fee_rate": 0.2782,
+      "rebate_rate": 3.3518,
+      "available": 2100000,
+      "available_capped": false
+    },
+    "EG": {
+      "fee_rate": 0.4214,
+      "rebate_rate": 3.2086,
+      "available": 900000,
+      "available_capped": false
+    },
+    "EIX": {
+      "fee_rate": 0.2782,
+      "rebate_rate": 3.3518,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "EL": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 4600000,
+      "available_capped": false
+    },
+    "ELV": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 3200000,
+      "available_capped": false
+    },
+    "EME": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 850000,
+      "available_capped": false
+    },
+    "EMR": {
+      "fee_rate": 0.3776,
+      "rebate_rate": 3.2524,
+      "available": 4800000,
+      "available_capped": false
+    },
+    "EOG": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 6500000,
+      "available_capped": false
+    },
+    "EQIX": {
+      "fee_rate": 0.2725,
+      "rebate_rate": 3.3575,
+      "available": 1900000,
+      "available_capped": false
+    },
+    "EQR": {
+      "fee_rate": 0.419,
+      "rebate_rate": 3.2111,
+      "available": 6500000,
+      "available_capped": false
+    },
+    "EQT": {
+      "fee_rate": 0.2782,
+      "rebate_rate": 3.3518,
+      "available": 8300000,
+      "available_capped": false
+    },
+    "ERIE": {
+      "fee_rate": 0.6842,
+      "rebate_rate": 2.9458,
+      "available": 9000,
+      "available_capped": false
+    },
+    "ES": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 9300000,
+      "available_capped": false
+    },
+    "ESS": {
+      "fee_rate": 0.3974,
+      "rebate_rate": 3.2326,
+      "available": 1200000,
+      "available_capped": false
+    },
+    "ETN": {
+      "fee_rate": 1.0074,
+      "rebate_rate": 2.6226,
+      "available": 300000,
+      "available_capped": false
+    },
+    "ETR": {
+      "fee_rate": 0.3596,
+      "rebate_rate": 3.2704,
+      "available": 4800000,
+      "available_capped": false
+    },
+    "EVRG": {
+      "fee_rate": 0.2517,
+      "rebate_rate": 3.3783,
+      "available": 2600000,
+      "available_capped": false
+    },
+    "EW": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 9000000,
+      "available_capped": false
+    },
+    "EXC": {
+      "fee_rate": 0.4132,
+      "rebate_rate": 3.2168,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "EXE": {
+      "fee_rate": 0.2622,
+      "rebate_rate": 3.3678,
+      "available": 6700000,
+      "available_capped": false
+    },
+    "EXPD": {
+      "fee_rate": 0.2828,
+      "rebate_rate": 3.3472,
+      "available": 1900000,
+      "available_capped": false
+    },
+    "EXPE": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 2800000,
+      "available_capped": false
+    },
+    "EXR": {
+      "fee_rate": 0.4213,
+      "rebate_rate": 3.2087,
+      "available": 3200000,
+      "available_capped": false
+    },
+    "F": {
+      "fee_rate": 0.2782,
+      "rebate_rate": 3.3518,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "FANG": {
+      "fee_rate": 0.4214,
+      "rebate_rate": 3.2086,
+      "available": 2400000,
+      "available_capped": false
+    },
+    "FAST": {
+      "fee_rate": 0.3977,
+      "rebate_rate": 3.2323,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "FCX": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "FDS": {
+      "fee_rate": 0.4217,
+      "rebate_rate": 3.2083,
+      "available": 400000,
+      "available_capped": false
+    },
+    "FDX": {
+      "fee_rate": 0.2605,
+      "rebate_rate": 3.3695,
+      "available": 3300000,
+      "available_capped": false
+    },
+    "FE": {
+      "fee_rate": 0.4042,
+      "rebate_rate": 3.2258,
+      "available": 3700000,
+      "available_capped": false
+    },
+    "FERG": {
+      "fee_rate": 0.2878,
+      "rebate_rate": 3.3422,
+      "available": 1400000,
+      "available_capped": false
+    },
+    "FFIV": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 1400000,
+      "available_capped": false
+    },
+    "FICO": {
+      "fee_rate": 0.4142,
+      "rebate_rate": 3.2158,
+      "available": 100000,
+      "available_capped": false
+    },
+    "FIS": {
+      "fee_rate": 0.4048,
+      "rebate_rate": 3.2252,
+      "available": 7900000,
+      "available_capped": false
+    },
+    "FITB": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 8600000,
+      "available_capped": false
+    },
+    "FIX": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 400000,
+      "available_capped": false
+    },
+    "FLEX": {
+      "fee_rate": 0.3988,
+      "rebate_rate": 3.2312,
+      "available": 5200000,
+      "available_capped": false
+    },
+    "FOX": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 2700000,
+      "available_capped": false
+    },
+    "FOXA": {
+      "fee_rate": 0.4087,
+      "rebate_rate": 3.2213,
+      "available": 800000,
+      "available_capped": false
+    },
+    "FRT": {
+      "fee_rate": 0.4135,
+      "rebate_rate": 3.2165,
+      "available": 2000000,
+      "available_capped": false
+    },
+    "FSLR": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 2300000,
+      "available_capped": false
+    },
+    "FTNT": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "FTV": {
+      "fee_rate": 0.412,
+      "rebate_rate": 3.218,
+      "available": 4300000,
+      "available_capped": false
+    },
+    "GD": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 3000000,
+      "available_capped": false
+    },
+    "GDDY": {
+      "fee_rate": 0.2586,
+      "rebate_rate": 3.3714,
+      "available": 2300000,
+      "available_capped": false
+    },
+    "GE": {
+      "fee_rate": 0.4293,
+      "rebate_rate": 3.2007,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "GEHC": {
+      "fee_rate": 0.2645,
+      "rebate_rate": 3.3655,
+      "available": 6800000,
+      "available_capped": false
+    },
+    "GEN": {
+      "fee_rate": 0.2821,
+      "rebate_rate": 3.3479,
+      "available": 2900000,
+      "available_capped": false
+    },
+    "GEV": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 3000000,
+      "available_capped": false
+    },
+    "GILD": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "GIS": {
+      "fee_rate": 0.2853,
+      "rebate_rate": 3.3447,
+      "available": 5700000,
+      "available_capped": false
+    },
+    "GL": {
+      "fee_rate": 0.4088,
+      "rebate_rate": 3.2212,
+      "available": 2000000,
+      "available_capped": false
+    },
+    "GLW": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "GM": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "GNRC": {
+      "fee_rate": 0.2782,
+      "rebate_rate": 3.3518,
+      "available": 1200000,
+      "available_capped": false
+    },
+    "GOOG": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "GOOGL": {
+      "fee_rate": 0.2912,
+      "rebate_rate": 3.3388,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "GPC": {
+      "fee_rate": 0.3821,
+      "rebate_rate": 3.2479,
+      "available": 1000000,
+      "available_capped": false
+    },
+    "GPN": {
+      "fee_rate": 0.4089,
+      "rebate_rate": 3.2211,
+      "available": 2900000,
+      "available_capped": false
+    },
+    "GRMN": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 1600000,
+      "available_capped": false
+    },
+    "GS": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 3800000,
+      "available_capped": false
+    },
+    "GWW": {
+      "fee_rate": 0.4087,
+      "rebate_rate": 3.2213,
+      "available": 400000,
+      "available_capped": false
+    },
+    "HAL": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "HAS": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 1400000,
+      "available_capped": false
+    },
+    "HBAN": {
+      "fee_rate": 0.4135,
+      "rebate_rate": 3.2165,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "HCA": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 2000000,
+      "available_capped": false
+    },
+    "HD": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "HIG": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 4400000,
+      "available_capped": false
+    },
+    "HII": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 650000,
+      "available_capped": false
+    },
+    "HLT": {
+      "fee_rate": 0.4099,
+      "rebate_rate": 3.2201,
+      "available": 2900000,
+      "available_capped": false
+    },
+    "HON": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 9800000,
+      "available_capped": false
+    },
+    "HOOD": {
+      "fee_rate": 0.4133,
+      "rebate_rate": 3.2167,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "HPE": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "HPQ": {
+      "fee_rate": 0.2783,
+      "rebate_rate": 3.3517,
+      "available": 8600000,
+      "available_capped": false
+    },
+    "HRL": {
+      "fee_rate": 0.2782,
+      "rebate_rate": 3.3518,
+      "available": 3200000,
+      "available_capped": false
+    },
+    "HSIC": {
+      "fee_rate": 0.2782,
+      "rebate_rate": 3.3518,
+      "available": 900000,
+      "available_capped": false
+    },
+    "HST": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "HSY": {
+      "fee_rate": 0.4136,
+      "rebate_rate": 3.2164,
+      "available": 1100000,
+      "available_capped": false
+    },
+    "HUBB": {
+      "fee_rate": 0.2782,
+      "rebate_rate": 3.3518,
+      "available": 450000,
+      "available_capped": false
+    },
+    "HUM": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 1900000,
+      "available_capped": false
+    },
+    "HWM": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 5000000,
+      "available_capped": false
+    },
+    "IBKR": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 6400000,
+      "available_capped": false
+    },
+    "IBM": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 9500000,
+      "available_capped": false
+    },
+    "ICE": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 8100000,
+      "available_capped": false
+    },
+    "IDXX": {
+      "fee_rate": 0.4135,
+      "rebate_rate": 3.2165,
+      "available": 1000000,
+      "available_capped": false
+    },
+    "IEX": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 1400000,
+      "available_capped": false
+    },
+    "IFF": {
+      "fee_rate": 0.3046,
+      "rebate_rate": 3.3254,
+      "available": 1200000,
+      "available_capped": false
+    },
+    "INCY": {
+      "fee_rate": 0.2782,
+      "rebate_rate": 3.3518,
+      "available": 5500000,
+      "available_capped": false
+    },
+    "INTC": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "INTU": {
+      "fee_rate": 0.4135,
+      "rebate_rate": 3.2165,
+      "available": 4900000,
+      "available_capped": false
+    },
+    "INVH": {
+      "fee_rate": 0.4138,
+      "rebate_rate": 3.2162,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "IP": {
+      "fee_rate": 0.5286,
+      "rebate_rate": 3.1014,
+      "available": 1400000,
+      "available_capped": false
+    },
+    "IQV": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 2900000,
+      "available_capped": false
+    },
+    "IR": {
+      "fee_rate": 0.4135,
+      "rebate_rate": 3.2165,
+      "available": 1700000,
+      "available_capped": false
+    },
+    "IRM": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 5600000,
+      "available_capped": false
+    },
+    "ISRG": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 5200000,
+      "available_capped": false
+    },
+    "IT": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 1000000,
+      "available_capped": false
+    },
+    "ITW": {
+      "fee_rate": 0.2728,
+      "rebate_rate": 3.3572,
+      "available": 2800000,
+      "available_capped": false
+    },
+    "IVZ": {
+      "fee_rate": 0.3564,
+      "rebate_rate": 3.2736,
+      "available": 5200000,
+      "available_capped": false
+    },
+    "J": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 1300000,
+      "available_capped": false
+    },
+    "JBHT": {
+      "fee_rate": 0.3351,
+      "rebate_rate": 3.2949,
+      "available": 1800000,
+      "available_capped": false
+    },
+    "JBL": {
+      "fee_rate": 0.2907,
+      "rebate_rate": 3.3393,
+      "available": 1500000,
+      "available_capped": false
+    },
+    "JCI": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 8600000,
+      "available_capped": false
+    },
+    "JKHY": {
+      "fee_rate": 0.4103,
+      "rebate_rate": 3.2197,
+      "available": 650000,
+      "available_capped": false
+    },
+    "JNJ": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "JPM": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "KDP": {
+      "fee_rate": 0.2782,
+      "rebate_rate": 3.3518,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "KEY": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "KEYS": {
+      "fee_rate": 0.5489,
+      "rebate_rate": 3.0812,
+      "available": 3000000,
+      "available_capped": false
+    },
+    "KHC": {
+      "fee_rate": 0.426,
+      "rebate_rate": 3.204,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "KIM": {
+      "fee_rate": 0.4053,
+      "rebate_rate": 3.2247,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "KKR": {
+      "fee_rate": 0.4167,
+      "rebate_rate": 3.2133,
+      "available": 6900000,
+      "available_capped": false
+    },
+    "KLAC": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "KMB": {
+      "fee_rate": 0.4105,
+      "rebate_rate": 3.2195,
+      "available": 950000,
+      "available_capped": false
+    },
+    "KMI": {
+      "fee_rate": 0.2782,
+      "rebate_rate": 3.3518,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "KO": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "KR": {
+      "fee_rate": 0.4135,
+      "rebate_rate": 3.2165,
+      "available": 8400000,
+      "available_capped": false
+    },
+    "KVUE": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "L": {
+      "fee_rate": 0.2782,
+      "rebate_rate": 3.3518,
+      "available": 2800000,
+      "available_capped": false
+    },
+    "LDOS": {
+      "fee_rate": 0.2782,
+      "rebate_rate": 3.3518,
+      "available": 1900000,
+      "available_capped": false
+    },
+    "LEN": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 1800000,
+      "available_capped": false
+    },
+    "LH": {
+      "fee_rate": 0.2782,
+      "rebate_rate": 3.3518,
+      "available": 950000,
+      "available_capped": false
+    },
+    "LHX": {
+      "fee_rate": 0.4298,
+      "rebate_rate": 3.2002,
+      "available": 2500000,
+      "available_capped": false
+    },
+    "LII": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 150000,
+      "available_capped": false
+    },
+    "LIN": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 4300000,
+      "available_capped": false
+    },
+    "LITE": {
+      "fee_rate": 0.2782,
+      "rebate_rate": 3.3518,
+      "available": 1700000,
+      "available_capped": false
+    },
+    "LLY": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 8500000,
+      "available_capped": false
+    },
+    "LMT": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 2200000,
+      "available_capped": false
+    },
+    "LNT": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 450000,
+      "available_capped": false
+    },
+    "LOW": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 5700000,
+      "available_capped": false
+    },
+    "LRCX": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "LULU": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 3200000,
+      "available_capped": false
+    },
+    "LUV": {
+      "fee_rate": 0.2782,
+      "rebate_rate": 3.3518,
+      "available": 5300000,
+      "available_capped": false
+    },
+    "LVS": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 6400000,
+      "available_capped": false
+    },
+    "LYB": {
+      "fee_rate": 0.2782,
+      "rebate_rate": 3.3518,
+      "available": 5800000,
+      "available_capped": false
+    },
+    "LYV": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 100000,
+      "available_capped": false
+    },
+    "MA": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "MAA": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 3500000,
+      "available_capped": false
+    },
+    "MAR": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 2000000,
+      "available_capped": false
+    },
+    "MAS": {
+      "fee_rate": 0.4062,
+      "rebate_rate": 3.2238,
+      "available": 5100000,
+      "available_capped": false
+    },
+    "MCD": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 9300000,
+      "available_capped": false
+    },
+    "MCHP": {
+      "fee_rate": 0.2577,
+      "rebate_rate": 3.3723,
+      "available": 7000000,
+      "available_capped": false
+    },
+    "MCK": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 1700000,
+      "available_capped": false
+    },
+    "MCO": {
+      "fee_rate": 0.371,
+      "rebate_rate": 3.259,
+      "available": 1900000,
+      "available_capped": false
+    },
+    "MDLZ": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "MDT": {
+      "fee_rate": 0.419,
+      "rebate_rate": 3.2111,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "MET": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 9300000,
+      "available_capped": false
+    },
+    "META": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "MGM": {
+      "fee_rate": 0.2782,
+      "rebate_rate": 3.3518,
+      "available": 1700000,
+      "available_capped": false
+    },
+    "MKC": {
+      "fee_rate": 0.4089,
+      "rebate_rate": 3.2211,
+      "available": 2400000,
+      "available_capped": false
+    },
+    "MLM": {
+      "fee_rate": 0.3981,
+      "rebate_rate": 3.2319,
+      "available": 450000,
+      "available_capped": false
+    },
+    "MMM": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 7600000,
+      "available_capped": false
+    },
+    "MO": {
+      "fee_rate": 0.4108,
+      "rebate_rate": 3.2192,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "MOS": {
+      "fee_rate": 0.2782,
+      "rebate_rate": 3.3518,
+      "available": 6500000,
+      "available_capped": false
+    },
+    "MPC": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 3400000,
+      "available_capped": false
+    },
+    "MPWR": {
+      "fee_rate": 0.2531,
+      "rebate_rate": 3.3769,
+      "available": 600000,
+      "available_capped": false
+    },
+    "MRK": {
+      "fee_rate": 0.4135,
+      "rebate_rate": 3.2165,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "MRNA": {
+      "fee_rate": 0.2503,
+      "rebate_rate": 3.3797,
+      "available": 2200000,
+      "available_capped": false
+    },
+    "MRSH": {
+      "fee_rate": 0.2658,
+      "rebate_rate": 3.3642,
+      "available": 5500000,
+      "available_capped": false
+    },
+    "MRVL": {
+      "fee_rate": 0.2618,
+      "rebate_rate": 3.3682,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "MS": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "MSCI": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 1000000,
+      "available_capped": false
+    },
+    "MSFT": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "MSI": {
+      "fee_rate": 0.3538,
+      "rebate_rate": 3.2762,
+      "available": 1700000,
+      "available_capped": false
+    },
+    "MTB": {
+      "fee_rate": 0.4231,
+      "rebate_rate": 3.2069,
+      "available": 2100000,
+      "available_capped": false
+    },
+    "MTD": {
+      "fee_rate": 0.2803,
+      "rebate_rate": 3.3497,
+      "available": 250000,
+      "available_capped": false
+    },
+    "MU": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "NCLH": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 2500000,
+      "available_capped": false
+    },
+    "NDAQ": {
+      "fee_rate": 0.2626,
+      "rebate_rate": 3.3674,
+      "available": 7100000,
+      "available_capped": false
+    },
+    "NDSN": {
+      "fee_rate": 0.2619,
+      "rebate_rate": 3.3681,
+      "available": 450000,
+      "available_capped": false
+    },
+    "NEE": {
+      "fee_rate": 0.252,
+      "rebate_rate": 3.378,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "NEM": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "NFLX": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "NI": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 8700000,
+      "available_capped": false
+    },
+    "NKE": {
+      "fee_rate": 0.3949,
+      "rebate_rate": 3.2351,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "NOC": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 1400000,
+      "available_capped": false
+    },
+    "NOW": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "NRG": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 2700000,
+      "available_capped": false
+    },
+    "NSC": {
+      "fee_rate": 0.419,
+      "rebate_rate": 3.2111,
+      "available": 2700000,
+      "available_capped": false
+    },
+    "NTAP": {
+      "fee_rate": 0.2782,
+      "rebate_rate": 3.3518,
+      "available": 3500000,
+      "available_capped": false
+    },
+    "NTRS": {
+      "fee_rate": 0.3269,
+      "rebate_rate": 3.3031,
+      "available": 3700000,
+      "available_capped": false
+    },
+    "NUE": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 2300000,
+      "available_capped": false
+    },
+    "NVDA": {
+      "fee_rate": 0.3215,
+      "rebate_rate": 3.3085,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "NVR": {
+      "fee_rate": 0.2782,
+      "rebate_rate": 3.3518,
+      "available": 35000,
+      "available_capped": false
+    },
+    "NWS": {
+      "fee_rate": 0.2533,
+      "rebate_rate": 3.3767,
+      "available": 450000,
+      "available_capped": false
+    },
+    "NWSA": {
+      "fee_rate": 0.3525,
+      "rebate_rate": 3.2775,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "NXPI": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 2600000,
+      "available_capped": false
+    },
+    "O": {
+      "fee_rate": 0.4093,
+      "rebate_rate": 3.2207,
+      "available": 9700000,
+      "available_capped": false
+    },
+    "ODFL": {
+      "fee_rate": 0.3164,
+      "rebate_rate": 3.3136,
+      "available": 1800000,
+      "available_capped": false
+    },
+    "OKE": {
+      "fee_rate": 0.332,
+      "rebate_rate": 3.298,
+      "available": 6900000,
+      "available_capped": false
+    },
+    "OMC": {
+      "fee_rate": 0.4135,
+      "rebate_rate": 3.2165,
+      "available": 1900000,
+      "available_capped": false
+    },
+    "ON": {
+      "fee_rate": 0.2782,
+      "rebate_rate": 3.3518,
+      "available": 6300000,
+      "available_capped": false
+    },
+    "ORCL": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "ORLY": {
+      "fee_rate": 0.4266,
+      "rebate_rate": 3.2034,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "OTIS": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 4300000,
+      "available_capped": false
+    },
+    "OXY": {
+      "fee_rate": 0.4135,
+      "rebate_rate": 3.2165,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "PANW": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 8200000,
+      "available_capped": false
+    },
+    "PAYX": {
+      "fee_rate": 0.4135,
+      "rebate_rate": 3.2165,
+      "available": 1800000,
+      "available_capped": false
+    },
+    "PCAR": {
+      "fee_rate": 0.2535,
+      "rebate_rate": 3.3765,
+      "available": 4600000,
+      "available_capped": false
+    },
+    "PCG": {
+      "fee_rate": 0.2807,
+      "rebate_rate": 3.3493,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "PEG": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 5900000,
+      "available_capped": false
+    },
+    "PEP": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "PFE": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "PFG": {
+      "fee_rate": 0.3006,
+      "rebate_rate": 3.3294,
+      "available": 1500000,
+      "available_capped": false
+    },
+    "PG": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "PGR": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 7300000,
+      "available_capped": false
+    },
+    "PH": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 1400000,
+      "available_capped": false
+    },
+    "PHM": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 2400000,
+      "available_capped": false
+    },
+    "PKG": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 1200000,
+      "available_capped": false
+    },
+    "PLD": {
+      "fee_rate": 0.2606,
+      "rebate_rate": 3.3694,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "PLTR": {
+      "fee_rate": 0.2782,
+      "rebate_rate": 3.3518,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "PM": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "PNC": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 4900000,
+      "available_capped": false
+    },
+    "PNR": {
+      "fee_rate": 0.4135,
+      "rebate_rate": 3.2165,
+      "available": 1400000,
+      "available_capped": false
+    },
+    "PNW": {
+      "fee_rate": 0.2782,
+      "rebate_rate": 3.3518,
+      "available": 350000,
+      "available_capped": false
+    },
+    "PODD": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 2300000,
+      "available_capped": false
+    },
+    "PPG": {
+      "fee_rate": 0.3678,
+      "rebate_rate": 3.2622,
+      "available": 2700000,
+      "available_capped": false
+    },
+    "PPL": {
+      "fee_rate": 0.4594,
+      "rebate_rate": 3.1706,
+      "available": 8700000,
+      "available_capped": false
+    },
+    "PRU": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 3300000,
+      "available_capped": false
+    },
+    "PSA": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 1700000,
+      "available_capped": false
+    },
+    "PSKY": {
+      "fee_rate": 0.8015,
+      "rebate_rate": 2.8285,
+      "available": 800000,
+      "available_capped": false
+    },
+    "PSX": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 4900000,
+      "available_capped": false
+    },
+    "PTC": {
+      "fee_rate": 0.2782,
+      "rebate_rate": 3.3518,
+      "available": 1200000,
+      "available_capped": false
+    },
+    "PWR": {
+      "fee_rate": 0.3963,
+      "rebate_rate": 3.2337,
+      "available": 2100000,
+      "available_capped": false
+    },
+    "PYPL": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "QCOM": {
+      "fee_rate": 0.296,
+      "rebate_rate": 3.334,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "RCL": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 1200000,
+      "available_capped": false
+    },
+    "REG": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 2800000,
+      "available_capped": false
+    },
+    "REGN": {
+      "fee_rate": 0.2555,
+      "rebate_rate": 3.3745,
+      "available": 1600000,
+      "available_capped": false
+    },
+    "RF": {
+      "fee_rate": 0.29,
+      "rebate_rate": 3.34,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "RJF": {
+      "fee_rate": 0.4298,
+      "rebate_rate": 3.2002,
+      "available": 1900000,
+      "available_capped": false
+    },
+    "RL": {
+      "fee_rate": 0.2808,
+      "rebate_rate": 3.3492,
+      "available": 800000,
+      "available_capped": false
+    },
+    "RMD": {
+      "fee_rate": 0.4133,
+      "rebate_rate": 3.2167,
+      "available": 400000,
+      "available_capped": false
+    },
+    "ROK": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 1200000,
+      "available_capped": false
+    },
+    "ROL": {
+      "fee_rate": 0.38,
+      "rebate_rate": 3.25,
+      "available": 4400000,
+      "available_capped": false
+    },
+    "ROP": {
+      "fee_rate": 0.2782,
+      "rebate_rate": 3.3518,
+      "available": 900000,
+      "available_capped": false
+    },
+    "ROST": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 4200000,
+      "available_capped": false
+    },
+    "RSG": {
+      "fee_rate": 0.2876,
+      "rebate_rate": 3.3424,
+      "available": 2600000,
+      "available_capped": false
+    },
+    "RTX": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "RVTY": {
+      "fee_rate": 0.4137,
+      "rebate_rate": 3.2163,
+      "available": 300000,
+      "available_capped": false
+    },
+    "SBAC": {
+      "fee_rate": 0.3116,
+      "rebate_rate": 3.3184,
+      "available": 2000000,
+      "available_capped": false
+    },
+    "SBUX": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 9700000,
+      "available_capped": false
+    },
+    "SCHW": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "SHW": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 3500000,
+      "available_capped": false
+    },
+    "SJM": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 1000000,
+      "available_capped": false
+    },
+    "SLB": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "SMCI": {
+      "fee_rate": 0.4135,
+      "rebate_rate": 3.2165,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "SNA": {
+      "fee_rate": 0.2782,
+      "rebate_rate": 3.3518,
+      "available": 800000,
+      "available_capped": false
+    },
+    "SNDK": {
+      "fee_rate": 0.2782,
+      "rebate_rate": 3.3518,
+      "available": 3500000,
+      "available_capped": false
+    },
+    "SNPS": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 2800000,
+      "available_capped": false
+    },
+    "SO": {
+      "fee_rate": 0.4135,
+      "rebate_rate": 3.2165,
+      "available": 9000000,
+      "available_capped": false
+    },
+    "SOLV": {
+      "fee_rate": 0.2686,
+      "rebate_rate": 3.3614,
+      "available": 1800000,
+      "available_capped": false
+    },
+    "SPG": {
+      "fee_rate": 0.2604,
+      "rebate_rate": 3.3696,
+      "available": 4700000,
+      "available_capped": false
+    },
+    "SPGI": {
+      "fee_rate": 0.2782,
+      "rebate_rate": 3.3518,
+      "available": 3100000,
+      "available_capped": false
+    },
+    "SRE": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 8000000,
+      "available_capped": false
+    },
+    "STE": {
+      "fee_rate": 0.4086,
+      "rebate_rate": 3.2214,
+      "available": 1200000,
+      "available_capped": false
+    },
+    "STLD": {
+      "fee_rate": 0.2688,
+      "rebate_rate": 3.3612,
+      "available": 1500000,
+      "available_capped": false
+    },
+    "STT": {
+      "fee_rate": 0.2782,
+      "rebate_rate": 3.3518,
+      "available": 4600000,
+      "available_capped": false
+    },
+    "STX": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 3000000,
+      "available_capped": false
+    },
+    "STZ": {
+      "fee_rate": 0.2624,
+      "rebate_rate": 3.3676,
+      "available": 1500000,
+      "available_capped": false
+    },
+    "SW": {
+      "fee_rate": 0.2582,
+      "rebate_rate": 3.3718,
+      "available": 2500000,
+      "available_capped": false
+    },
+    "SWK": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 1300000,
+      "available_capped": false
+    },
+    "SWKS": {
+      "fee_rate": 0.5113,
+      "rebate_rate": 3.1187,
+      "available": 350000,
+      "available_capped": false
+    },
+    "SYF": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 6500000,
+      "available_capped": false
+    },
+    "SYK": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 3500000,
+      "available_capped": false
+    },
+    "SYY": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 8100000,
+      "available_capped": false
+    },
+    "T": {
+      "fee_rate": 0.275,
+      "rebate_rate": 3.355,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "TAP": {
+      "fee_rate": 0.4116,
+      "rebate_rate": 3.2184,
+      "available": 1000000,
+      "available_capped": false
+    },
+    "TDG": {
+      "fee_rate": 0.2782,
+      "rebate_rate": 3.3518,
+      "available": 650000,
+      "available_capped": false
+    },
+    "TDY": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 600000,
+      "available_capped": false
+    },
+    "TECH": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 2300000,
+      "available_capped": false
+    },
+    "TEL": {
+      "fee_rate": 0.4176,
+      "rebate_rate": 3.2124,
+      "available": 3400000,
+      "available_capped": false
+    },
+    "TER": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 2300000,
+      "available_capped": false
+    },
+    "TFC": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "TGT": {
+      "fee_rate": 0.2782,
+      "rebate_rate": 3.3518,
+      "available": 4900000,
+      "available_capped": false
+    },
+    "TJX": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "TKO": {
+      "fee_rate": 0.4142,
+      "rebate_rate": 3.2158,
+      "available": 500000,
+      "available_capped": false
+    },
+    "TMO": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 4000000,
+      "available_capped": false
+    },
+    "TMUS": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 7700000,
+      "available_capped": false
+    },
+    "TPL": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 250000,
+      "available_capped": false
+    },
+    "TPR": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 4500000,
+      "available_capped": false
+    },
+    "TRGP": {
+      "fee_rate": 0.2782,
+      "rebate_rate": 3.3518,
+      "available": 4000000,
+      "available_capped": false
+    },
+    "TRMB": {
+      "fee_rate": 0.414,
+      "rebate_rate": 3.216,
+      "available": 2700000,
+      "available_capped": false
+    },
+    "TROW": {
+      "fee_rate": 0.2546,
+      "rebate_rate": 3.3754,
+      "available": 1100000,
+      "available_capped": false
+    },
+    "TRV": {
+      "fee_rate": 0.2891,
+      "rebate_rate": 3.341,
+      "available": 3000000,
+      "available_capped": false
+    },
+    "TSCO": {
+      "fee_rate": 0.4114,
+      "rebate_rate": 3.2186,
+      "available": 5400000,
+      "available_capped": false
+    },
+    "TSLA": {
+      "fee_rate": 0.397,
+      "rebate_rate": 3.233,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "TSN": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 6100000,
+      "available_capped": false
+    },
+    "TT": {
+      "fee_rate": 0.4541,
+      "rebate_rate": 3.1759,
+      "available": 2700000,
+      "available_capped": false
+    },
+    "TTD": {
+      "fee_rate": 0.2782,
+      "rebate_rate": 3.3518,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "TTWO": {
+      "fee_rate": 0.419,
+      "rebate_rate": 3.2111,
+      "available": 3600000,
+      "available_capped": false
+    },
+    "TXN": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "TXT": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 2400000,
+      "available_capped": false
+    },
+    "TYL": {
+      "fee_rate": 0.4136,
+      "rebate_rate": 3.2164,
+      "available": 250000,
+      "available_capped": false
+    },
+    "UAL": {
+      "fee_rate": 0.3086,
+      "rebate_rate": 3.3214,
+      "available": 4600000,
+      "available_capped": false
+    },
+    "UBER": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "UDR": {
+      "fee_rate": 0.413,
+      "rebate_rate": 3.217,
+      "available": 4200000,
+      "available_capped": false
+    },
+    "UHS": {
+      "fee_rate": 0.2734,
+      "rebate_rate": 3.3566,
+      "available": 900000,
+      "available_capped": false
+    },
+    "ULTA": {
+      "fee_rate": 0.4129,
+      "rebate_rate": 3.2171,
+      "available": 900000,
+      "available_capped": false
+    },
+    "UNH": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "UNP": {
+      "fee_rate": 0.4298,
+      "rebate_rate": 3.2002,
+      "available": 5700000,
+      "available_capped": false
+    },
+    "UPS": {
+      "fee_rate": 0.2522,
+      "rebate_rate": 3.3778,
+      "available": 7200000,
+      "available_capped": false
+    },
+    "URI": {
+      "fee_rate": 0.2782,
+      "rebate_rate": 3.3518,
+      "available": 650000,
+      "available_capped": false
+    },
+    "USB": {
+      "fee_rate": 0.2606,
+      "rebate_rate": 3.3694,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "V": {
+      "fee_rate": 0.2689,
+      "rebate_rate": 3.3611,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "VEEV": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 2600000,
+      "available_capped": false
+    },
+    "VICI": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "VLO": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 4500000,
+      "available_capped": false
+    },
+    "VLTO": {
+      "fee_rate": 0.3563,
+      "rebate_rate": 3.2737,
+      "available": 4300000,
+      "available_capped": false
+    },
+    "VMC": {
+      "fee_rate": 0.4126,
+      "rebate_rate": 3.2174,
+      "available": 1000000,
+      "available_capped": false
+    },
+    "VRSK": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 2200000,
+      "available_capped": false
+    },
+    "VRSN": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 2200000,
+      "available_capped": false
+    },
+    "VRT": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 5800000,
+      "available_capped": false
+    },
+    "VRTX": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 2900000,
+      "available_capped": false
+    },
+    "VST": {
+      "fee_rate": 0.4135,
+      "rebate_rate": 3.2165,
+      "available": 5600000,
+      "available_capped": false
+    },
+    "VTR": {
+      "fee_rate": 0.4093,
+      "rebate_rate": 3.2207,
+      "available": 8200000,
+      "available_capped": false
+    },
+    "VTRS": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "VZ": {
+      "fee_rate": 0.2782,
+      "rebate_rate": 3.3518,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "WAB": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 1900000,
+      "available_capped": false
+    },
+    "WAT": {
+      "fee_rate": 0.4135,
+      "rebate_rate": 3.2165,
+      "available": 500000,
+      "available_capped": false
+    },
+    "WBD": {
+      "fee_rate": 0.2791,
+      "rebate_rate": 3.3509,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "WDAY": {
+      "fee_rate": 0.4135,
+      "rebate_rate": 3.2165,
+      "available": 1100000,
+      "available_capped": false
+    },
+    "WDC": {
+      "fee_rate": 0.2626,
+      "rebate_rate": 3.3674,
+      "available": 5700000,
+      "available_capped": false
+    },
+    "WEC": {
+      "fee_rate": 0.2782,
+      "rebate_rate": 3.3518,
+      "available": 2100000,
+      "available_capped": false
+    },
+    "WELL": {
+      "fee_rate": 0.2771,
+      "rebate_rate": 3.3529,
+      "available": 9600000,
+      "available_capped": false
+    },
+    "WFC": {
+      "fee_rate": 0.3235,
+      "rebate_rate": 3.3065,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "WM": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 3100000,
+      "available_capped": false
+    },
+    "WMB": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "WMT": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "WRB": {
+      "fee_rate": 0.4102,
+      "rebate_rate": 3.2198,
+      "available": 4100000,
+      "available_capped": false
+    },
+    "WSM": {
+      "fee_rate": 0.4081,
+      "rebate_rate": 3.2219,
+      "available": 1400000,
+      "available_capped": false
+    },
+    "WST": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 1100000,
+      "available_capped": false
+    },
+    "WTW": {
+      "fee_rate": 0.2782,
+      "rebate_rate": 3.3518,
+      "available": 950000,
+      "available_capped": false
+    },
+    "WY": {
+      "fee_rate": 0.2782,
+      "rebate_rate": 3.3518,
+      "available": 7900000,
+      "available_capped": false
+    },
+    "WYNN": {
+      "fee_rate": 0.4135,
+      "rebate_rate": 3.2165,
+      "available": 300000,
+      "available_capped": false
+    },
+    "XEL": {
+      "fee_rate": 0.2782,
+      "rebate_rate": 3.3518,
+      "available": 4500000,
+      "available_capped": false
+    },
+    "XOM": {
+      "fee_rate": 0.25,
+      "rebate_rate": 3.38,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "XYL": {
+      "fee_rate": 0.3793,
+      "rebate_rate": 3.2507,
+      "available": 4000000,
+      "available_capped": false
+    },
+    "XYZ": {
+      "fee_rate": 0.2539,
+      "rebate_rate": 3.3761,
+      "available": 10000000,
+      "available_capped": true
+    },
+    "YUM": {
+      "fee_rate": 0.3767,
+      "rebate_rate": 3.2533,
+      "available": 2300000,
+      "available_capped": false
+    },
+    "ZBH": {
+      "fee_rate": 0.325,
+      "rebate_rate": 3.305,
+      "available": 2200000,
+      "available_capped": false
+    },
+    "ZBRA": {
+      "fee_rate": 0.2782,
+      "rebate_rate": 3.3518,
+      "available": 750000,
+      "available_capped": false
+    },
+    "ZTS": {
+      "fee_rate": 0.3757,
+      "rebate_rate": 3.2544,
+      "available": 8500000,
+      "available_capped": false
+    }
+  }
+}

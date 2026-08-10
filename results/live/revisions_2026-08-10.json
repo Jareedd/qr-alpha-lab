@@ -1,0 +1,80 @@
+{
+  "compared_to": "2026-08-07",
+  "n_shared_dates": 450,
+  "n_shared_tickers": 503,
+  "n_cells_compared": 226245,
+  "n_price_cells_changed": 4055,
+  "frac_price_cells_changed": 0.017923048023160734,
+  "max_abs_rel_price_change": 0.009816582741492663,
+  "n_return_cells_compared": 225741,
+  "n_return_cells_changed": 9,
+  "frac_return_cells_changed": 3.986869908434888e-05,
+  "max_abs_return_change": 6.823894337637526e-05,
+  "n_tickers_affected": 11,
+  "n_price_cells_noise_band": 59752,
+  "n_return_cells_noise_band": 84312,
+  "n_cells_appeared": 1,
+  "n_cells_vanished": 14,
+  "top_affected_tickers": [
+    {
+      "ticker": "BKR",
+      "n_price_cells": 450,
+      "max_abs_rel_change": 0.0036655434523045205,
+      "n_return_cells": 0
+    },
+    {
+      "ticker": "CCL",
+      "n_price_cells": 450,
+      "max_abs_rel_change": 0.0052103012551227845,
+      "n_return_cells": 0
+    },
+    {
+      "ticker": "CMS",
+      "n_price_cells": 450,
+      "max_abs_rel_change": 0.00800593611723377,
+      "n_return_cells": 0
+    },
+    {
+      "ticker": "JBHT",
+      "n_price_cells": 450,
+      "max_abs_rel_change": 0.0016840348584603593,
+      "n_return_cells": 0
+    },
+    {
+      "ticker": "ETN",
+      "n_price_cells": 450,
+      "max_abs_rel_change": 0.0024545855276895123,
+      "n_return_cells": 0
+    },
+    {
+      "ticker": "FE",
+      "n_price_cells": 450,
+      "max_abs_rel_change": 0.009816582741492663,
+      "n_return_cells": 0
+    },
+    {
+      "ticker": "HWM",
+      "n_price_cells": 450,
+      "max_abs_rel_change": 0.000483430560613618,
+      "n_return_cells": 0
+    },
+    {
+      "ticker": "WFC",
+      "n_price_cells": 450,
+      "max_abs_rel_change": 0.005708708318593492,
+      "n_return_cells": 0
+    },
+    {
+      "ticker": "NSC",
+      "n_price_cells": 450,
+      "max_abs_rel_change": 0.003942306547087382,
+      "n_return_cells": 0
+    },
+    {
+      "ticker": "MNST",
+      "n_price_cells": 4,
+      "max_abs_rel_change": 6.753958051419762e-05,
+      "n_return_cells": 8
+    }
+  ]
+}
