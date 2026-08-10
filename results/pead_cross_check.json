@@ -1,0 +1,281 @@
+{
+  "fmp_symbols": [
+    "AAPL",
+    "AMZN",
+    "CSCO",
+    "CVX",
+    "GOOGL",
+    "JNJ",
+    "JPM",
+    "KO",
+    "META",
+    "MSFT",
+    "NKE",
+    "NVDA",
+    "TSLA",
+    "V",
+    "WMT"
+  ],
+  "av_symbols": [
+    "AAPL",
+    "AMZN",
+    "CSCO",
+    "CVX",
+    "GOOGL",
+    "JNJ",
+    "JPM",
+    "KO",
+    "META",
+    "MSFT",
+    "NKE",
+    "NVDA",
+    "TSLA",
+    "V",
+    "WMT"
+  ],
+  "n_fmp_events": 1615,
+  "n_av_events": 1581,
+  "report": {
+    "passed": true,
+    "thresholds": {
+      "exact_match_max": 0.2,
+      "min_surprise_std": 0.0001,
+      "min_nonzero_frac": 0.5,
+      "min_sign_frac": 0.05,
+      "recency_report_days": 7
+    },
+    "reasons": [],
+    "caveat": "PASSED means NO GROSS RED FLAGS in this feed, NOT proven point-in-time. The gold-standard PIT confirmation is cross-source / IBES agreement on the consensus estimate; without it, the residual risk is a quietly backfilled or post-hoc-revised epsEstimated that still looks like a clean distribution. A passing gate is NECESSARY, NOT SUFFICIENT \u2014 confirm with a cross-source check before trusting any graded H13 number.",
+    "coverage": {
+      "n_events": 1615,
+      "n_tickers": 15,
+      "history_start": "1993-01-16",
+      "history_end": "2026-05-21",
+      "median_events_per_ticker": 113.0
+    },
+    "date_semantics": {
+      "passed": true,
+      "n_future_with_actual": 0,
+      "today": "2026-06-26"
+    },
+    "surprise_dist": {
+      "passed": true,
+      "std": 0.9888112524349861,
+      "nonzero_frac": 0.8835913312693499,
+      "pos_frac": 0.7071207430340557,
+      "neg_frac": 0.17647058823529413,
+      "n": 1615
+    },
+    "backfilled": {
+      "passed": true,
+      "exact_match_frac": 0.11640866873065016,
+      "threshold": 0.2
+    },
+    "recency": {
+      "n_with_last_updated": 1615,
+      "median_lag_days": 4661.0,
+      "frac_updated_gt_window": 1.0,
+      "window_days": 7,
+      "note": "SOFT/report only \u2014 a high share of announcements re-touched long after the fact is a post-hoc-revision RISK, not proof; vendor metadata can change without the estimate changing."
+    },
+    "cross_source": {
+      "n_overlap": 1533,
+      "agree_frac_within_1pct": 0.6314416177429876,
+      "median_rel_diff": 0.0015600624024961012,
+      "note": "HIGH agreement is strong PIT evidence; reported, not auto-graded (this build leaves the cross-source pass/fail call to the operator's review)."
+    }
+  },
+  "overall_diagnostics": {
+    "n_overlap": 1533,
+    "agree_frac_within_1pct": 0.6314416177429876,
+    "median_rel_diff": 0.0015600624024961012,
+    "exact_frac": 0.4938030006523157,
+    "n_informative": 1292,
+    "frac_fmp_closer_to_av_est": 0.8978328173374613,
+    "median_dist_to_av_est": 0.0002599999999999998,
+    "median_dist_to_av_actual": 0.04000000000000002,
+    "surprise_corr": 0.7574545489160546
+  },
+  "per_name": [
+    {
+      "ticker": "CSCO",
+      "n_overlap": 121,
+      "agree_frac_within_1pct": 0.8842975206611571,
+      "median_rel_diff": 0.0,
+      "exact_frac": 0.8181818181818182,
+      "n_informative": 107,
+      "frac_fmp_closer_to_av_est": 0.9626168224299065,
+      "median_dist_to_av_est": 0.0,
+      "median_dist_to_av_actual": 0.020000000000000018,
+      "surprise_corr": 0.9659452579441642
+    },
+    {
+      "ticker": "CVX",
+      "n_overlap": 121,
+      "agree_frac_within_1pct": 0.5785123966942148,
+      "median_rel_diff": 0.006849315068493157,
+      "exact_frac": 0.371900826446281,
+      "n_informative": 120,
+      "frac_fmp_closer_to_av_est": 0.975,
+      "median_dist_to_av_est": 0.010000000000000009,
+      "median_dist_to_av_actual": 0.12,
+      "surprise_corr": 0.9291846642134747
+    },
+    {
+      "ticker": "KO",
+      "n_overlap": 121,
+      "agree_frac_within_1pct": 0.9421487603305785,
+      "median_rel_diff": 0.0,
+      "exact_frac": 0.8842975206611571,
+      "n_informative": 85,
+      "frac_fmp_closer_to_av_est": 0.9882352941176471,
+      "median_dist_to_av_est": 0.0,
+      "median_dist_to_av_actual": 0.019999999999999962,
+      "surprise_corr": 0.9862192719269269
+    },
+    {
+      "ticker": "MSFT",
+      "n_overlap": 121,
+      "agree_frac_within_1pct": 0.8264462809917356,
+      "median_rel_diff": 0.0,
+      "exact_frac": 0.6942148760330579,
+      "n_informative": 106,
+      "frac_fmp_closer_to_av_est": 1.0,
+      "median_dist_to_av_est": 0.0,
+      "median_dist_to_av_actual": 0.050000000000000044,
+      "surprise_corr": 0.6491963042058576
+    },
+    {
+      "ticker": "JNJ",
+      "n_overlap": 120,
+      "agree_frac_within_1pct": 0.9416666666666667,
+      "median_rel_diff": 0.0,
+      "exact_frac": 0.7583333333333333,
+      "n_informative": 108,
+      "frac_fmp_closer_to_av_est": 0.9722222222222222,
+      "median_dist_to_av_est": 0.0,
+      "median_dist_to_av_actual": 0.030000000000000027,
+      "surprise_corr": 0.9915531681019586
+    },
+    {
+      "ticker": "AMZN",
+      "n_overlap": 116,
+      "agree_frac_within_1pct": 0.25,
+      "median_rel_diff": 0.14987499999999998,
+      "exact_frac": 0.19827586206896552,
+      "n_informative": 72,
+      "frac_fmp_closer_to_av_est": 0.7083333333333334,
+      "median_dist_to_av_est": 0.008244999999999997,
+      "median_dist_to_av_actual": 0.047580000000000004,
+      "surprise_corr": 0.9466413117335711
+    },
+    {
+      "ticker": "JPM",
+      "n_overlap": 112,
+      "agree_frac_within_1pct": 0.6160714285714286,
+      "median_rel_diff": 0.007168550873586851,
+      "exact_frac": 0.38392857142857145,
+      "n_informative": 109,
+      "frac_fmp_closer_to_av_est": 0.981651376146789,
+      "median_dist_to_av_est": 0.010000000000000009,
+      "median_dist_to_av_actual": 0.1299999999999999,
+      "surprise_corr": 0.5131765184954198
+    },
+    {
+      "ticker": "NKE",
+      "n_overlap": 112,
+      "agree_frac_within_1pct": 0.7767857142857143,
+      "median_rel_diff": 0.0,
+      "exact_frac": 0.75,
+      "n_informative": 92,
+      "frac_fmp_closer_to_av_est": 0.9565217391304348,
+      "median_dist_to_av_est": 0.0,
+      "median_dist_to_av_actual": 0.035,
+      "surprise_corr": 0.9965636641898757
+    },
+    {
+      "ticker": "AAPL",
+      "n_overlap": 105,
+      "agree_frac_within_1pct": 0.5523809523809524,
+      "median_rel_diff": 0.008771929824561412,
+      "exact_frac": 0.3142857142857143,
+      "n_informative": 82,
+      "frac_fmp_closer_to_av_est": 0.9024390243902439,
+      "median_dist_to_av_est": 0.0025000000000000022,
+      "median_dist_to_av_actual": 0.030000000000000013,
+      "surprise_corr": 0.9880083268038105
+    },
+    {
+      "ticker": "NVDA",
+      "n_overlap": 104,
+      "agree_frac_within_1pct": 0.11538461538461539,
+      "median_rel_diff": 9.0,
+      "exact_frac": 0.0673076923076923,
+      "n_informative": 80,
+      "frac_fmp_closer_to_av_est": 0.475,
+      "median_dist_to_av_est": 0.010000000000000005,
+      "median_dist_to_av_actual": 0.0255,
+      "surprise_corr": 0.3390650466564832
+    },
+    {
+      "ticker": "WMT",
+      "n_overlap": 101,
+      "agree_frac_within_1pct": 0.44554455445544555,
+      "median_rel_diff": 0.0132000000000001,
+      "exact_frac": 0.38613861386138615,
+      "n_informative": 68,
+      "frac_fmp_closer_to_av_est": 0.8382352941176471,
+      "median_dist_to_av_est": 0.0032999999999999974,
+      "median_dist_to_av_actual": 0.024999999999999994,
+      "surprise_corr": -0.2555631970581163
+    },
+    {
+      "ticker": "GOOGL",
+      "n_overlap": 87,
+      "agree_frac_within_1pct": 0.5287356321839081,
+      "median_rel_diff": 0.008849557522123706,
+      "exact_frac": 0.13793103448275862,
+      "n_informative": 86,
+      "frac_fmp_closer_to_av_est": 0.9302325581395349,
+      "median_dist_to_av_est": 0.0025000000000000022,
+      "median_dist_to_av_actual": 0.021750000000000005,
+      "surprise_corr": 0.9882452578932547
+    },
+    {
+      "ticker": "V",
+      "n_overlap": 73,
+      "agree_frac_within_1pct": 0.9178082191780822,
+      "median_rel_diff": 0.0,
+      "exact_frac": 0.8356164383561644,
+      "n_informative": 70,
+      "frac_fmp_closer_to_av_est": 0.9571428571428572,
+      "median_dist_to_av_est": 0.0,
+      "median_dist_to_av_actual": 0.030000000000000027,
+      "surprise_corr": 0.40831424537010336
+    },
+    {
+      "ticker": "TSLA",
+      "n_overlap": 63,
+      "agree_frac_within_1pct": 0.2698412698412698,
+      "median_rel_diff": 0.08100000000000006,
+      "exact_frac": 0.19047619047619047,
+      "n_informative": 52,
+      "frac_fmp_closer_to_av_est": 0.75,
+      "median_dist_to_av_est": 0.010000000000000009,
+      "median_dist_to_av_actual": 0.04460000000000003,
+      "surprise_corr": 0.8204842924123713
+    },
+    {
+      "ticker": "META",
+      "n_overlap": 56,
+      "agree_frac_within_1pct": 0.6071428571428571,
+      "median_rel_diff": 0.007738095238095214,
+      "exact_frac": 0.30357142857142855,
+      "n_informative": 55,
+      "frac_fmp_closer_to_av_est": 0.8,
+      "median_dist_to_av_est": 0.020000000000000018,
+      "median_dist_to_av_actual": 0.19000000000000017,
+      "surprise_corr": 0.9302286602103136
+    }
+  ]
+}

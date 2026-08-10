@@ -102,6 +102,30 @@ def test_compute_sue_fallback_branches_never_mixed():
     assert set(out["sue_method"]) == {"surprise_pct", "rel_est"}
 
 
+def test_drop_low_eps_filter_frozen_threshold():
+    """The pre-registered H13 rounding filter drops |est_eps| <= $0.10 (where 2-dp
+    EPS rounding quantizes SUE), keeps the rest, and reports the count. Boundary
+    is strict-greater-than: est == 0.10 is DROPPED."""
+    df = pd.DataFrame({
+        "ticker": ["A", "B", "C", "D"],
+        "ann_date": pd.to_datetime(["2023-01-01"] * 4),
+        "actual_eps": [0.05, 0.20, 0.11, 1.50],
+        "est_eps": [0.03, 0.10, 0.11, 1.40],   # A:0.03 drop, B:0.10 drop(boundary), C/D keep
+    })
+    kept, n_dropped = pead.drop_low_eps(df)
+    assert n_dropped == 2
+    assert list(kept["ticker"]) == ["C", "D"]
+    # threshold is the frozen module constant, not a magic literal
+    assert pead.MIN_ABS_EST == 0.10
+    # negative estimates use |est|: -0.50 is kept, -0.07 dropped
+    df2 = pd.DataFrame({
+        "ticker": ["E", "F"], "ann_date": pd.to_datetime(["2023-01-01"] * 2),
+        "actual_eps": [-0.40, -0.10], "est_eps": [-0.50, -0.07],
+    })
+    kept2, n2 = pead.drop_low_eps(df2)
+    assert n2 == 1 and list(kept2["ticker"]) == ["E"]
+
+
 # --------------------------------------------------------------------------- #
 # T+2 PIT entry — the poison-the-future pin.
 # --------------------------------------------------------------------------- #

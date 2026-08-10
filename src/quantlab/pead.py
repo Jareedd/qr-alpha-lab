@@ -135,6 +135,30 @@ def compute_sue(df: pd.DataFrame) -> pd.DataFrame:
     return out.reset_index(drop=True)
 
 
+# Pre-registered H13 data-quality filter (frozen 2026-06-26, before forward
+# returns). EPS reported to 2 decimals quantizes the relative surprise on
+# sub-$0.10-EPS quarters: a 1-cent rounding on a 3-cent estimate is a 33% swing,
+# so SUE sign becomes unreliable on low-price (often post-split) names — the PIT
+# cross-check found ~42% (NVDA) / ~35% (WMT) FMP-vs-AV SUE sign flips concentrated
+# there. Because the trial RANKS on SUE and trades the extreme quintiles, those
+# quantized rows can land in the wrong leg. We DROP them (root-cause removal of
+# the rounding artifact) rather than winsorize (which caps magnitude but keeps a
+# sign-flipped row in the extreme leg). Declared filter, count reported; NOT a
+# tunable knob.
+MIN_ABS_EST = 0.10
+
+
+def drop_low_eps(events: pd.DataFrame, min_abs_est: float = MIN_ABS_EST
+                 ) -> tuple[pd.DataFrame, int]:
+    """Drop announcements whose |est_eps| <= ``min_abs_est`` (the frozen H13
+    rounding filter). Returns ``(kept_events, n_dropped)``. Pure; no leakage
+    (uses only the at-announcement estimate, references no price or future bar)."""
+    est = pd.to_numeric(events["est_eps"], errors="coerce")
+    keep = est.abs() > float(min_abs_est)
+    n_dropped = int((~keep).sum())
+    return events[keep].reset_index(drop=True), n_dropped
+
+
 # --------------------------------------------------------------------------- #
 # Event-time long/short PEAD portfolio (the core of H13).
 # --------------------------------------------------------------------------- #

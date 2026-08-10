@@ -111,7 +111,10 @@ class TiingoSource:
                     time.sleep(min(60, 3 * 2 ** attempt))   # harder backoff for 429
                     continue
                 raise
-            except urllib.error.URLError:
+            except (urllib.error.URLError, TimeoutError, ConnectionError):
+                # Transient network faults — incl. a raw socket read timeout during
+                # r.read() (NOT wrapped in URLError) which previously slipped both
+                # handlers and crashed a whole multi-name pull. Back off and retry.
                 self._last = time.monotonic()
                 if attempt < retries - 1:
                     time.sleep(2 ** attempt)

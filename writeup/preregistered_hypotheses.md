@@ -797,12 +797,15 @@ uses **N = 13**.
   carry and CEF trials.
 
 ### H13: Post-earnings-announcement drift (PEAD) survives on large-cap US, net of costs — the first INSTITUTIONAL-DATA hypothesis (needs PIT analyst estimates)
-- Status: **PROPOSED — harness built + offline-tested; DATA-GATED on a bounded
-  Bloomberg estimate pull (ASU FAR Lab / Noble terminal).** One CSV from a graded
-  trial #14. See `writeup/bloomberg_pead_pull.md` for the (license-respecting,
-  bounded) pull spec. This is the first hypothesis that deliberately steps past
-  free data: the §10 research-note frontier ("post-earnings drift with real
-  estimates") made concrete.
+- Status: **PROPOSED — config FROZEN 2026-06-26; cleared to run as graded trial
+  #14 on owner sign-off.** Graded path = **FMP `epsEstimated`** (free quasi-PIT
+  consensus), validated by a fail-closed leakage gate AND an Alpha Vantage
+  cross-source PIT check (see PIT-safety below); the bounded Bloomberg/IBES pull
+  in `writeup/bloomberg_pead_pull.md` and IBES-via-WRDS remain the gold-standard
+  UPGRADE path (re-run on PIT data when access lands). First hypothesis that steps
+  past free *price* data onto estimates — the §10 research-note frontier
+  ("post-earnings drift with real estimates") made concrete on a credibility-gated
+  free feed.
 - Economic prior (moderate, declared): markets UNDER-REACT to earnings surprises;
   prices drift in the surprise direction for weeks after the announcement
   (Bernard–Thomas 1989). The load-bearing input is the surprise relative to the
@@ -814,24 +817,51 @@ uses **N = 13**.
   large-cap S&P 500 net of costs the honest prior is a DECAYED, possibly-marginal
   effect — exactly the project's recurring story, now on the canonical estimates
   anomaly.
-- Point-in-time safety: (1) the surprise uses Bloomberg's **at-the-announcement**
-  consensus (PIT by construction — Bloomberg computes surprise against the estimate
-  standing before the print). (2) The signal enters only AFTER the announcement —
-  **entry at T+2** (skip the announcement-day jump so we measure DRIFT, not the
-  immediate reaction, and avoid same-bar leakage). (3) Forward returns are strictly
-  post-T+2. (4) Universe caveat, declared: a CURRENT-S&P-500 first cut carries mild
-  universe survivorship — far less corrosive for an EVENT study than for a
-  buy-the-dip (each event is dated and local), but a PIT-member pull is the clean
-  upgrade and is noted as the residual.
-- Exact config (to be FROZEN at the data step; sketch): universe = S&P 500 (current
-  members first cut; PIT if pulled), ~2015→2026; signal = **SUE** =
-  (actual − consensus)/std(estimates) per announcement, or Bloomberg `surprise_pct`
-  if dispersion is unavailable; **event study** (reuse `events.py`): enter T+2,
-  hold ~60 trading days, LONG top-quintile SUE / SHORT bottom-quintile, plus a
-  cross-sectional monthly variant (rank on the most-recent surprise within a
-  trailing window); prices = Tiingo (delisting-inclusive, already cached); 10
-  bps/side; size/liquidity reported by tercile (PEAD's small-cap concentration is
-  the headline risk).
+- Point-in-time safety: (1) the surprise uses **FMP `epsEstimated`** as the
+  pre-print consensus. It is FREE quasi-PIT, so it is gated, not trusted: a
+  fail-closed leakage validator (`validate_pead_events`) PASSES (exact est==actual
+  11.6% < 20%, two-signed surprise std 0.99, zero future-dated-with-actual), AND a
+  cross-source check vs Alpha Vantage on 15 large caps (~1,533 overlapping events)
+  shows the **backfill failure mode is ruled out**: FMP's estimate sits a median
+  **0.0003 from AV's estimate vs 0.0400 from AV's actual** (90% closer to the
+  estimate on surprise quarters; FMP-vs-AV surprise correlation 0.76), and FMP's
+  own internal surprise GROWS with the realized surprise — the opposite of a feed
+  backfilled to the actual. **HEADLINE residual risk (declared):** FMP and AV are
+  NOT independent — ~49% of estimates and ~70% of actuals are byte-identical, so
+  they almost certainly resell a common upstream archive; the cross-check confirms
+  CONSISTENCY, not point-in-time-ness. The one PIT failure mode that survives is a
+  shared, post-hoc-REVISED (but not realized) consensus, which only a true PIT
+  vendor (IBES/WRDS/Bloomberg) can exclude — hence the gold-standard re-run is the
+  declared upgrade. (2) The signal enters only AFTER the announcement — **entry at
+  T+2** (skip the announcement-day jump so we measure DRIFT, not the immediate
+  reaction, and avoid same-bar leakage); verified by a single-bar-jump leakage
+  sweep (the book earns zero on the announcement/entry bars, only from the first
+  strictly-post-entry return). (3) Forward returns are strictly post-T+2. (4)
+  Universe caveat, declared: a CURRENT-S&P-500 first cut carries mild universe
+  survivorship — far less corrosive for an EVENT study than for a buy-the-dip (each
+  event is dated and local), but a PIT-member pull is the clean upgrade and is
+  noted as the residual.
+- Exact config (**FROZEN 2026-06-26, before forward returns**): universe = CURRENT
+  S&P 500 members (`--universe current`), pulled via FMP subject to the free-tier
+  quota — the graded run uses every name successfully fetched, with COVERAGE
+  reported (names, events, history span); signal = **SUE** = scale-invariant
+  relative surprise **(actual − est)/|est|** (FMP carries no analyst dispersion, so
+  the `std_est` branch is unused and the `surprise_pct`/`rel_est` fallback is the
+  sole path — confirmed 100% of events; this makes SUE invariant to corporate-action
+  split factors, which therefore cancel and cannot leak split-level noise into the
+  ranked signal); **DATA-QUALITY FILTER (frozen, declared):** drop announcements
+  with **|est_eps| ≤ $0.10** (`pead.drop_low_eps`) — 2-decimal EPS rounding
+  quantizes the relative surprise on sub-$0.10-EPS quarters (a 1¢ rounding on a 3¢
+  estimate is a 33% swing), which the PIT cross-check found drives ~42% (NVDA) /
+  ~35% (WMT) FMP-vs-AV SUE sign-flips on low-price post-split names; dropped count
+  is reported. This is a one-time pre-registered cleaning step, **NOT** a tunable
+  knob (no post-hoc threshold scan). **event study**: enter T+2, hold 60 trading
+  days, LONG top-quintile SUE / SHORT bottom-quintile within each announcement-month
+  cohort, plus a cross-sectional monthly variant (rank on the most-recent surprise
+  within a trailing 90d window); prices = Tiingo (delisting-inclusive); 10 bps/side;
+  size/liquidity reported by tercile (PEAD's small-cap concentration is the headline
+  risk). **The leakage gate MUST re-PASS on the actual graded universe** (not just
+  the 15-name cross-check sample) before N is spent.
 - Machinery gate (MUST pass in-env first): a synthetic `planted_pead` world
   (forward drift injected ONLY after high-|SUE| events) recovered, and a null world
   (same surprise events, no drift) rejected, paired per seed.
