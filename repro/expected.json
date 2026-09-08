@@ -1,0 +1,48 @@
+{
+  "_comment": "Expected values for scripts/reproduce.py. Regenerated with --update; any change here must be explained in a research_log.md entry, because moving the expectation to match the code is how a reproducibility check quietly becomes decorative.",
+  "recorded_on": "2026-09-08",
+  "environment": {
+    "python": "3.11.15",
+    "platform": "Linux x86_64",
+    "numpy": "2.4.6",
+    "pandas": "3.0.5",
+    "scikit-learn": "1.9.0",
+    "scipy": "1.17.1"
+  },
+  "tolerances": {
+    "mean_rank_ic": 0.001,
+    "sharpe_net": 0.005,
+    "sharpe_gross": 0.005,
+    "dsr": 0.005,
+    "psr": 0.005,
+    "annual_turnover": 0.01,
+    "ic_tstat_newey_west": 0.05,
+    "max_drawdown": 0.005,
+    "n_days": 0,
+    "leak_dsr": 0.005,
+    "clean_noise_dsr": 0.005,
+    "planted_dsr": 0.005
+  },
+  "checks": {
+    "planted_recovery": {
+      "mean_rank_ic": 0.06286314099595566,
+      "sharpe_net": 0.8645821957617111,
+      "dsr": 0.991946199409908,
+      "annual_turnover": 2.1699999999999995,
+      "ic_tstat_newey_west": 2.0006101872547917,
+      "n_days": 1992
+    },
+    "noise_rejection": {
+      "mean_rank_ic": -0.019925111472763598,
+      "sharpe_net": -0.5028891736804397,
+      "dsr": 0.00043487354008937167,
+      "n_days": 1992
+    },
+    "leak_detection": {
+      "planted_dsr": 0.9919,
+      "clean_noise_dsr": 0.0004,
+      "leak_dsr": 1.0
+    },
+    "determinism": {}
+  }
+}
