@@ -39,12 +39,22 @@ jobs:
             exit 0
           fi
           python scripts/live_trade.py
+      # Everything below runs with `if: always()`. Learned the expensive way:
+      # from 2026-08-11 the trade step died on an upstream Wikipedia layout
+      # change, and because a failed step ends the job, it took the monitoring
+      # report AND the H7 borrow snapshot down with it for 25 weekdays -- even
+      # though collect_borrow.py needs neither the universe scrape nor the
+      # broker (it reads the last committed predictions log). Independent
+      # collectors must fail independently; an unbackfillable dataset cannot
+      # afford to share a failure domain with the trading path.
       - name: Refresh monitoring report (non-fatal -- trading already logged)
+        if: always()
         run: python scripts/live_report.py || echo "report failed; cycle log is intact"
       # H7 (collection-only, zero trials): daily borrow-fee snapshot of the
       # live universe. Unbackfillable by construction -- the commit history
       # is the timestamp. Non-fatal: a collector bug never costs a cycle.
       - name: Borrow snapshot (H7)
+        if: always()
         run: python scripts/collect_borrow.py || echo "borrow snapshot failed; cycle intact (gap stays visible in the record)"
       # Keep only the newest 7 snapshot dirs before saving: the revision
       # JSONs (committed above) are the durable measurements; raw snapshots
@@ -58,7 +68,11 @@ jobs:
         with:
           path: data_cache
           key: live-snapshots-${{ github.run_id }}
+      # Also always(): on a failed trading day there may still be a borrow
+      # snapshot or a refreshed report to preserve, and an uncommitted
+      # collection is a lost collection -- the runner is ephemeral.
       - name: Commit prediction log (the immutable live-IC record)
+        if: always()
         run: |
           git config user.name "qr-alpha-lab live bot"
           git config user.email "actions@users.noreply.github.com"

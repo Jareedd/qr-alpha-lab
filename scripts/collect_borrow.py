@@ -29,14 +29,24 @@ from quantlab import borrow
 from quantlab.live import assert_write_once
 
 
-def snapshot_universe(live_dir: str) -> list[str]:
-    """Tickers from the most recent predictions and weights logs."""
+def snapshot_universe(live_dir: str) -> tuple[list[str], str | None]:
+    """(tickers, as-of date) from the most recent predictions and weights logs.
+
+    The as-of date is returned, and recorded in the snapshot, because this
+    collector deliberately runs even when the day's trading cycle failed
+    (live.yml, `if: always()`) -- so the universe can legitimately be older
+    than the snapshot. A borrow record that does not say which cross-section
+    it covers is not evidence; stating it costs one field.
+    """
     names: set[str] = set()
+    asof: str | None = None
     for pattern in ("predictions_*.csv", "weights_*.csv"):
         files = sorted(glob.glob(os.path.join(live_dir, pattern)))
         if files:
             names |= set(pd.read_csv(files[-1], index_col="ticker").index.astype(str))
-    return sorted(names)
+            stamp = os.path.basename(files[-1]).split("_")[-1].removesuffix(".csv")
+            asof = max(asof, stamp) if asof else stamp
+    return sorted(names), asof
 
 
 def main() -> None:
@@ -45,7 +55,7 @@ def main() -> None:
     ap.add_argument("--allow-overwrite", action="store_true")
     args = ap.parse_args()
 
-    universe = snapshot_universe(args.live_dir)
+    universe, universe_asof = snapshot_universe(args.live_dir)
     if not universe:
         sys.exit("no live records found -- nothing to snapshot against")
 
@@ -54,7 +64,7 @@ def main() -> None:
     if frame.empty:
         sys.exit("IBKR file parsed to zero rows -- format drift? raw head: " + raw[:200])
 
-    snap = borrow.build_snapshot(file_stamp, frame, universe)
+    snap = borrow.build_snapshot(file_stamp, frame, universe, universe_asof=universe_asof)
     asof = (file_stamp.split(" ")[0] if file_stamp
             else str(pd.Timestamp.utcnow().date()))
     out_path = os.path.join(args.live_dir, f"borrow_{asof}.json")
@@ -64,8 +74,8 @@ def main() -> None:
     print(
         f"[borrow] {out_path}: {snap['universe_covered']}/{snap['universe_size']} "
         f"universe names found in {snap['n_symbols_in_file']:,}-symbol file "
-        f"(stamp {snap['file_stamp']}); fee p50/p90/p99 "
-        f"{snap['fee_rate_percentiles_full_file']}"
+        f"(stamp {snap['file_stamp']}, universe as of {snap['universe_asof']}); "
+        f"fee p50/p90/p99 {snap['fee_rate_percentiles_full_file']}"
     )
 
 

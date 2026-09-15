@@ -27,3 +27,10 @@ jobs:
             git commit -m "scorecard: refresh live-experiment SVG"
             git push
           }
+
+      # Deliberately AFTER the commit, so the stalled banner reaches the
+      # committed artifact before the job goes red. A scorecard workflow that
+      # can only report success is not monitoring: this one rendered a green
+      # check nightly for the five weeks the trading job was dead.
+      - name: fail loudly if the live experiment has stalled
+        run: python3 scripts/live_scorecard.py --check-stale

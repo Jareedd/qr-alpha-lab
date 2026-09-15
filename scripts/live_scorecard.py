@@ -17,6 +17,8 @@ after the trading job and commits the SVG when it changes.
 """
 from __future__ import annotations
 
+import argparse
+import datetime as dt
 import glob
 import json
 import os
@@ -30,7 +32,15 @@ TXT, DIM, KEY = "#e6edf3", "#8b949e", "#58a6ff"
 GRN, RED, GOLD = "#3fb950", "#f85149", "#ffd757"
 MONO = "ui-monospace,SFMono-Regular,Menlo,Consolas,monospace"
 
-W, H = 820, 300
+W, H = 820, 310
+
+# A live experiment that has quietly stopped is worse than no live experiment:
+# the scorecard keeps rendering, the workflow keeps going green, and the
+# artifact a reader sees still says "nightly". That is exactly what happened
+# between 2026-08-11 and 2026-09-15 -- 25 weekday cycles lost to a crash in the
+# universe scrape, with every signal in the repo reporting success. So the
+# renderer measures its own freshness and says so, on the artifact itself.
+STALE_AFTER_WEEKDAYS = 3
 
 
 def load_cycles() -> list[dict]:
@@ -54,7 +64,29 @@ def fmt_money(x: float) -> str:
     return f"${x:,.0f}"
 
 
-def build_svg(cycles: list[dict]) -> str:
+def weekdays_between(start: dt.date, end: dt.date) -> int:
+    """Weekdays strictly after ``start`` through ``end`` (holidays not modelled).
+
+    Deliberately crude: it over-counts around market holidays, which is the
+    safe direction for a staleness alarm -- a false "check this" costs a
+    glance, a missed stall costs the dataset.
+    """
+    days, cur = 0, start
+    while cur < end:
+        cur += dt.timedelta(days=1)
+        if cur.weekday() < 5:
+            days += 1
+    return days
+
+
+def staleness(cycles: list[dict], today: dt.date | None = None) -> tuple[int, str]:
+    """(weekdays since the last logged cycle, that cycle's date)."""
+    last = cycles[-1]["asof"]
+    today = today or dt.date.today()
+    return weekdays_between(dt.date.fromisoformat(last), today), last
+
+
+def build_svg(cycles: list[dict], today: dt.date | None = None) -> str:
     n = len(cycles)
     eq = [c["equity"] for c in cycles]
     dates = [c["asof"] for c in cycles]
@@ -65,7 +97,7 @@ def build_svg(cycles: list[dict]) -> str:
     n_rev = (last.get("revisions") or {}).get("n_return_cells_changed")
 
     # ---- equity curve geometry -------------------------------------------
-    gx, gy, gw, gh = 30, 92, 560, 150
+    gx, gy, gw, gh = 30, 100, 560, 150
     lo = min(min(eq), start_cap)
     hi = max(max(eq), start_cap)
     pad = (hi - lo) * 0.10 or 1.0
@@ -97,7 +129,20 @@ def build_svg(cycles: list[dict]) -> str:
         ("ORDER FAILURES", f'{last.get("n_failed", 0)}', GRN if not last.get("n_failed") else RED),
         ("RETURN-CELL REVISIONS", "—" if n_rev is None else f"{n_rev}", TXT),
     ]
-    tx, ty, tw, th, gap = 610, 86, 186, 27, 4
+    # Freshness strip: stated on the artifact, not just in a workflow log.
+    stale_days, last_date = staleness(cycles, today)
+    hdr_col = DIM
+    stale_svg = ""
+    if stale_days > STALE_AFTER_WEEKDAYS:
+        hdr_col = RED
+        stale_svg = (
+            f'<rect x="24" y="70" width="{W - 48}" height="16" rx="4" fill="{RED}" opacity="0.18"/>'
+            f'<text x="30" y="82" font-family="{MONO}" font-size="10" font-weight="700" fill="{RED}">'
+            f'STALLED — no cycle logged since {last_date} ({stale_days} weekdays). '
+            f'The curve below ends there; it is not current.</text>'
+        )
+
+    tx, ty, tw, th, gap = 610, 94, 186, 27, 4
     tiles_svg = ""
     for i, (lab, val, col) in enumerate(tiles):
         y0 = ty + i * (th + gap)
@@ -111,7 +156,8 @@ def build_svg(cycles: list[dict]) -> str:
 <rect width="{W}" height="{H}" rx="12" fill="{BG}" stroke="{LINE}" stroke-width="2"/>
 <text x="24" y="30" font-family="{MONO}" font-size="15" font-weight="700" fill="{TXT}">LIVE PAPER-TRADING EXPERIMENT</text>
 <text x="24" y="48" font-family="{MONO}" font-size="10.5" fill="{DIM}">qr-alpha-lab · nightly via GitHub Actions · predictions logged BEFORE any order exists · shadow 12-1 momentum control arm</text>
-<text x="24" y="64" font-family="{MONO}" font-size="10.5" fill="{DIM}">cycle {n} · {dates[0]} → {dates[-1]} · Alpaca paper account (client refuses non-paper endpoints)</text>
+<text x="24" y="64" font-family="{MONO}" font-size="10.5" fill="{hdr_col}">cycle {n} · {dates[0]} → {dates[-1]} · Alpaca paper account (client refuses non-paper endpoints)</text>
+{stale_svg}
 <g>
   <rect x="{gx - 8}" y="{gy - 10}" width="{gw + 16}" height="{gh + 34}" rx="8" fill="{PANEL}" stroke="{LINE}"/>
   <line x1="{gx}" y1="{y_start:.1f}" x2="{gx + gw}" y2="{y_start:.1f}" stroke="{DIM}" stroke-width="1" stroke-dasharray="4 4" opacity=".7"/>
@@ -127,15 +173,38 @@ def build_svg(cycles: list[dict]) -> str:
 </svg>'''
 
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument(
+        "--check-stale",
+        action="store_true",
+        help="render nothing; exit non-zero if the live experiment has stalled "
+             "(run as a separate CI step so the stall is an alarm, not a quiet green check)",
+    )
+    args = ap.parse_args(argv)
+
     cycles = load_cycles()
     if not cycles:
         print("no live cycles found; nothing to render")
         return 1
+
+    stale_days, last_date = staleness(cycles)
+    if args.check_stale:
+        if stale_days > STALE_AFTER_WEEKDAYS:
+            print(
+                f"::error title=Live experiment stalled::no cycle logged since {last_date} "
+                f"({stale_days} weekdays). The nightly job is failing or disabled; every "
+                f"weekday it stays down is an unbackfillable H5/H7 record lost."
+            )
+            return 1
+        print(f"live cycles current: last {last_date} ({stale_days} weekdays ago)")
+        return 0
+
     svg = build_svg(cycles)
     with open(OUT, "w") as fh:
         fh.write(svg)
-    print(f"wrote {os.path.relpath(OUT)} ({len(svg)} bytes, {len(cycles)} cycles)")
+    note = f" STALE: last cycle {last_date}, {stale_days} weekdays ago" if stale_days > STALE_AFTER_WEEKDAYS else ""
+    print(f"wrote {os.path.relpath(OUT)} ({len(svg)} bytes, {len(cycles)} cycles).{note}")
     return 0
 
 

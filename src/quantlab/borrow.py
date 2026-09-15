@@ -99,16 +99,25 @@ def parse_ibkr_short_file(text: str) -> tuple[str, pd.DataFrame]:
 
 
 def build_snapshot(
-    file_stamp: str, frame: pd.DataFrame, universe: list[str]
+    file_stamp: str,
+    frame: pd.DataFrame,
+    universe: list[str],
+    universe_asof: str | None = None,
 ) -> dict:
     """JSON-ready snapshot: per-name records for OUR universe (the live
     book's scored cross-section), plus whole-file aggregates so format or
-    coverage drift is visible without storing 20k rows a day."""
+    coverage drift is visible without storing 20k rows a day.
+
+    ``universe_asof`` dates the cross-section itself. It can lag the snapshot
+    when the collector runs on a day whose trading cycle failed -- which is by
+    design (an unbackfillable record should not stop because something else
+    broke), and therefore has to be visible in the record."""
     in_univ = frame.loc[frame.index.intersection(universe)]
     fees = frame["fee_rate"].dropna()
     return {
         "source": f"{FTP_HOST}/{FILE}",
         "file_stamp": file_stamp,
+        "universe_asof": universe_asof,
         "fetched_at_utc": dt.datetime.now(dt.timezone.utc).isoformat(
             timespec="seconds"
         ),

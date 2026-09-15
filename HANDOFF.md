@@ -18,7 +18,7 @@ You are the research co-pilot on **qr-alpha-lab**, a multi-month quantitative re
 
 1. **No leakage, ever.** All features use only past data. Labels are forward returns; train/test splits keep an embargo ≥ label horizon. Any new feature or label must come with a one-line argument for why it is point-in-time safe.
 2. **The falsification gate.** After ANY change to features, models, validation, or backtest logic, re-run both sanity checks before trusting anything: `--data planted` must recover the signal (DSR > 0.95); `--data noise` must reject it (DSR low). If noise mode "finds alpha," stop all other work and hunt the leak. This gate is also enforced in CI (§4).
-3. **Count every trial → N.** Every strategy variant, hyperparameter tweak, feature set, or horizon evaluated on real data increments the global trial count by exactly 1. **N never resets.** It feeds the Deflated Sharpe Ratio: the DSR is the PROBABILITY that the strategy's true Sharpe exceeds the EXPECTED MAXIMUM Sharpe of N noise trials (Bailey–López de Prado), adjusted for skew and kurtosis — so the bar a result must clear rises with N, not a simple ratio. Synthetic planted/noise runs validate the harness but do not increment N. **N = 11 today.** The count is mechanized in `registry.py`: a real-data run REFUSES to start unless it names a PROPOSED registration or declares a reproduction.
+3. **Count every trial → N.** Every strategy variant, hyperparameter tweak, feature set, or horizon evaluated on real data increments the global trial count by exactly 1. **N never resets.** It feeds the Deflated Sharpe Ratio: the DSR is the PROBABILITY that the strategy's true Sharpe exceeds the EXPECTED MAXIMUM Sharpe of N noise trials (Bailey–López de Prado), adjusted for skew and kurtosis — so the bar a result must clear rises with N, not a simple ratio. Synthetic planted/noise runs validate the harness but do not increment N. **N = 13 today (trials #12 H1 and #13 H12 ran 2026-06-24/25; see §0).** `research_log.md` is the authority — read N from there, never from this file. The count is mechanized in `registry.py`: a real-data run REFUSES to start unless it names a PROPOSED registration or declares a reproduction.
 4. **Costs are part of every result.** Never report a gross-only number. Turnover is a headline metric.
 5. **Baselines first.** Any model must beat (a) equal-weight and (b) a one-line 12-1 momentum rank, net of costs, OOS. If it doesn't, that's a reportable finding, not a failure to hide.
 6. **Never delete or weaken a failing test to make it pass.** Failing tests are information. Fix the code, or — if the test is provably wrong — document why in the commit message.
@@ -30,11 +30,53 @@ You are the research co-pilot on **qr-alpha-lab**, a multi-month quantitative re
 
 ---
 
-## 3. Where the project stands today (2026-06-17)
+## 0. STATE UPDATE — 2026-09-15 (read this before §3; §3–§6 are a 2026-06-17 snapshot)
+
+**N = 13, still ZERO graduations.** Trials #12 (H1 fundamental quality — the
+"quality premium" was value in disguise: raw net SR +0.58 / t_NW +2.30, but the
+HML-neutral arm where graduation is judged collapses to −0.18, DSR 0.009) and
+#13 (H12 broader-basket opportunistic insider clusters — a properly POWERED
+clean null: net SR −0.13, t_NW −0.58, DSR 0.013, all 7 registered gates fail)
+have run since the snapshot below. The survivorship wall that blocked H1 from
+trial #1 was solved on FREE data (SEC name-crosswalk to 94% dead-name
+fundamentals + Tiingo delisting-inclusive prices), so "blocked on CRSP" is no
+longer the project's ceiling.
+
+**The live experiment was DOWN 2026-08-11 → 2026-09-15 and is now fixed.** The
+nightly job crashed every weekday for five weeks at `universe.fetch_sp500_tables`
+— Wikipedia moved the component-changes table to its own article and gave it an
+extra column, and the parser addressed tables by position with a fixed column
+count. **26 cycles lost, unbackfillable**, which pushes the H5/H7 stage-2 unlock
+(≥60 cycles; 38 collected) from 2026-09-09 to ~2026-10-15. Because a failed step
+ends a GitHub Actions job, the failure also took down the H7 borrow snapshot,
+which needs neither the scrape nor the broker. Fixed 2026-09-15: name-based
+table selection with a two-page fallback and guards that REFUSE a half-parsed
+scrape (falling back to today's members would be silent survivorship bias);
+`if: always()` on the collectors and the commit step; and a freshness alarm on
+the scorecard, which had been exiting 0 nightly throughout the outage. See the
+2026-09-15 `research_log.md` row.
+
+**Operational state to verify at session start:** is a cycle logged for the
+last trading day? `python scripts/live_scorecard.py --check-stale` answers in
+one second and exits non-zero if not. A stalled live experiment outranks
+research work — every weekday it stays down is a record that cannot be recovered.
+
+**Also since the snapshot:** PR #8 and the `pbo-leak-h10-dera` batch are merged;
+there are no open PRs. Branch `claude/qr-alpha-lab-reproducible-bwcz8l` (CI
+green, 494 tests) carries finished reproducibility/ingest/case-study work that
+is NOT on `main` and has no PR — decide whether to merge it. H13 (PEAD) is
+frozen but its registration text still names FMP while the code's graded path
+moved to Alpha Vantage; that amendment must be made explicitly before any
+trial #14. H14 (live-vol construction variant) was frozen 2026-08-06 and awaits
+sign-off.
+
+---
+
+## 3. Where the project stands today (2026-06-17 snapshot — superseded in part by §0)
 
 **Phases:** Phase 1 (core pipeline + falsification harness) done; Phases 2–6 substantially built out (real data, point-in-time universe, neutralization/risk, logged-trial research, execution realism + capacity, live paper trading + monitoring). Currently in **Phase 7** (the AQR-style research note) with Phase-8-style alt-data exploration drafted.
 
-**N = 11, with ZERO graduations.** No strategy has cleared the bar. This is the honest headline, not a shortfall.
+**N = 11, with ZERO graduations** *(as of this June snapshot; N = 13 today — see §0)*. No strategy has cleared the bar. This is the honest headline, not a shortfall.
 
 **The central thesis:** Free-data cross-sectional alpha, honestly screened, is largely exhausted. Survivorship bias was the headline "alpha" in trials #1–7. The first genuine non-null (trial #8, crypto funding carry) fails a rigorous Deflated Sharpe test *and* has decayed 50%+ post-publication (McLean–Pontiff), teaching the same lesson in a second asset class. The project's best-looking result (trial #11, CEF reversion) was overturned by its own discipline when an entry-lag diagnostic exposed an implementability trap. The product is the process.
 

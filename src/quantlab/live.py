@@ -295,8 +295,8 @@ def run_daily(
                 json.dump(rev, f, indent=2)
             summary["revisions"] = {
                 k: rev[k]
-                for k in ("compared_to", "frac_price_cells_changed",
-                          "n_return_cells_changed")
+                for k in ("compared_to", "gap_weekdays", "is_consecutive_cycle",
+                          "frac_price_cells_changed", "n_return_cells_changed")
             }
     except Exception as exc:  # noqa: BLE001 -- monitoring is best-effort
         summary["revisions_error"] = str(exc)[:200]

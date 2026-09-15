@@ -6,17 +6,28 @@ usually thrived). That is survivorship bias, and it silently inflates returns
 (McLean-Pontiff-scale effects). The fix is to know who was in the index ON
 each historical date and only trade those names at that time.
 
-Method: Wikipedia's "List of S&P 500 companies" page maintains (a) the
-current constituent table and (b) a changes table (effective date, ticker
-added, ticker removed) going back decades. Starting from today's membership
-and walking the changes BACKWARD (undo each addition, redo each removal)
-yields the membership set over any past interval. Change effective dates are
+Method: Wikipedia maintains (a) the current constituent table on "List of
+S&P 500 companies" and (b) a changes table (effective date, ticker added,
+ticker removed) going back decades -- since ~2026-08 on its own page,
+"Historical components of the S&P 500". Starting from today's membership and
+walking the changes BACKWARD (undo each addition, redo each removal) yields
+the membership set over any past interval. Change effective dates are
 announced in advance, so gating trades by effective date is point-in-time
 safe.
 
 Honest limitations (do not delete -- quantify):
 - The changes table is community-maintained: dense and reliable for recent
   decades, sparser before ~2000. Keep backtest start >= 2005 (we use 2010).
+- It is also not a point-in-time vendor feed: its layout moves under us (it
+  has broken this parser twice), and departures can go unrecorded. Measured
+  2026-09-15: of the 498 names the live book scored on 2026-08-10, exactly
+  one (EQR, renamed in an acquisition) is absent from BOTH today's members
+  and the changes table, so it vanishes from the reconstructed universe
+  without a trace -- a 0.2% silent survivorship hole in this scrape. The
+  parser refuses a half-parsed table (see ``_assert_tables_sane``) but it
+  cannot conjure rows Wikipedia never had. A paid PIT membership vendor
+  (CRSP) is the only real fix; this is why the write-up calls the universe
+  "point-in-time-ish".
 - A point-in-time *membership mask* does not conjure up price data for dead
   companies: names removed via bankruptcy or acquisition often have no Yahoo
   history. ``coverage_report`` counts exactly how many member-names lack
@@ -29,17 +40,147 @@ from __future__ import annotations
 
 import io
 import os
+import re
 import urllib.request
 
 import pandas as pd
 
 WIKI_URL = "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies"
+# Wikipedia moved the component-changes table OUT of the constituents article
+# (the live cycle started crashing on it 2026-08-11; the constituents page now
+# serves only the current-membership table). The changes live in their own
+# article, which the constituents page's editor notes point to. We still look
+# for the changes table on the constituents page first, so an upstream revert
+# needs no code change here.
+WIKI_CHANGES_URL = "https://en.wikipedia.org/wiki/Historical_components_of_the_S%26P_500"
 _UA = "qr-alpha-lab/0.1 (student research project)"
+
+# Sanity floors. A community-maintained page is not a point-in-time vendor:
+# it can be re-sectioned, re-columned, or served half-parsed at any time, and
+# the dangerous failure is the SILENT one -- a short changes table quietly
+# reconstructs a membership set that is too close to today's, i.e. it puts
+# survivorship bias back into the universe that exists to remove it. These
+# floors turn that into a loud crash. They are lower bounds on quantities
+# that only ever grow (observed 2026-09: 503 members, 354 post-2010 changes).
+MIN_CURRENT_MEMBERS = 450
+MAX_CURRENT_MEMBERS = 550
+MIN_CHANGE_ROWS_SINCE_2010 = 250
+MIN_PARSED_DATE_FRAC = 0.98
+
+_TICKER_RE = re.compile(r"^[A-Z][A-Z0-9-]{0,6}$")
 
 
 def _normalize_ticker(t: str) -> str:
-    """Wikipedia uses BRK.B / BF.B; yfinance wants BRK-B / BF-B."""
-    return str(t).strip().upper().replace(".", "-")
+    """Wikipedia uses BRK.B / BF.B; yfinance wants BRK-B / BF-B.
+
+    Also strips leftover wiki markup: the changes table carries occasional
+    cells like ``"ALLE |"`` from a malformed template. Taking the first
+    whitespace/pipe-delimited token recovers the symbol; anything that still
+    fails ``_TICKER_RE`` is a parse error, not a ticker, and raises rather
+    than entering the membership set as a junk name.
+    """
+    if t is None or (isinstance(t, float) and pd.isna(t)):
+        raise ValueError("empty ticker cell from Wikipedia")
+    raw = str(t).strip()
+    token = re.split(r"[\s|]+", raw)[0].upper().replace(".", "-")
+    if not _TICKER_RE.match(token):
+        raise ValueError(f"unparseable ticker cell from Wikipedia: {raw!r}")
+    return token
+
+
+def _flat_columns(df: pd.DataFrame) -> list[str]:
+    """Lowercased, whitespace-joined column labels (MultiIndex-safe).
+
+    Wikipedia's changes table uses a two-row header (Added/Removed over
+    Ticker/Security); the constituents table uses a flat one. Selecting
+    columns by NAME rather than by position is what makes this parser
+    survive the upstream edits that have already broken it twice.
+    """
+    out = []
+    for col in df.columns:
+        parts = [str(x) for x in col] if isinstance(col, tuple) else [str(col)]
+        # A pandas-flattened MultiIndex repeats the label when the header
+        # cell spans both rows ("Effective Date Effective Date").
+        dedup = [p for i, p in enumerate(parts) if i == 0 or p != parts[i - 1]]
+        out.append(" ".join(dedup).strip().lower())
+    return out
+
+
+def _read_tables(url: str) -> list[pd.DataFrame]:
+    req = urllib.request.Request(url, headers={"User-Agent": _UA})
+    html = urllib.request.urlopen(req, timeout=30).read().decode("utf-8")
+    return pd.read_html(io.StringIO(html))
+
+
+def _find_current_table(tables: list[pd.DataFrame]) -> pd.DataFrame | None:
+    """The constituents table: has a Symbol column and a GICS Sector column."""
+    for tbl in tables:
+        cols = _flat_columns(tbl)
+        if any(c == "symbol" for c in cols) and any("gics sector" in c for c in cols):
+            out = tbl.copy()
+            out.columns = cols
+            return out
+    return None
+
+
+def _find_changes_table(
+    tables: list[pd.DataFrame], with_names: bool = False
+) -> pd.DataFrame | None:
+    """The changes table: a date column plus added/removed ticker columns.
+
+    Tolerates extra columns (the 2026 layout added a ``Refs`` column, which
+    is exactly what broke the old positional parser) and either header shape.
+    ``with_names`` also keeps the company-name columns -- the free source of
+    DEAD companies' names, which the SEC CIK crosswalk depends on.
+    """
+    for tbl in tables:
+        cols = _flat_columns(tbl)
+        date_c = next((c for c in cols if "date" in c), None)
+        added_c = next((c for c in cols if c.startswith("added") and "ticker" in c), None)
+        removed_c = next((c for c in cols if c.startswith("removed") and "ticker" in c), None)
+        if date_c and added_c and removed_c:
+            out = tbl.copy()
+            out.columns = cols
+            reason_c = next((c for c in cols if "reason" in c), None)
+            keep = {date_c: "date", added_c: "added", removed_c: "removed"}
+            if reason_c:
+                keep[reason_c] = "reason"
+            if with_names:
+                for pre in ("added", "removed"):
+                    nm = next(
+                        (c for c in cols if c.startswith(pre) and "security" in c), None
+                    )
+                    if nm:
+                        keep[nm] = f"{pre}_name"
+            out = out[list(keep)].rename(columns=keep)
+            for optional in ("reason", *(("added_name", "removed_name") if with_names else ())):
+                if optional not in out.columns:
+                    out[optional] = None
+            return out
+    return None
+
+
+def fetch_changes_frame(
+    with_names: bool = False, tables: list[pd.DataFrame] | None = None
+) -> tuple[pd.DataFrame | None, str]:
+    """(raw changes frame, the URL it came from), constituents page first.
+
+    Shared by every caller that needs the changes table, so the two-page
+    fallback and the name-based column selection have exactly one
+    implementation. A second copy of this logic in ``cik_crosswalk`` is what
+    left the SEC name-crosswalk carrying the same latent crash that took the
+    live cycle down for five weeks. ``tables`` passes in an already-fetched
+    constituents page so the caller does not request it twice.
+    """
+    raw = _find_changes_table(
+        tables if tables is not None else _read_tables(WIKI_URL), with_names=with_names
+    )
+    if raw is not None:
+        return raw, WIKI_URL
+    return (
+        _find_changes_table(_read_tables(WIKI_CHANGES_URL), with_names=with_names),
+        WIKI_CHANGES_URL,
+    )
 
 
 def fetch_sp500_tables(cache_dir: str = "data_cache") -> tuple[pd.DataFrame, pd.DataFrame]:
@@ -63,31 +204,87 @@ def fetch_sp500_tables(cache_dir: str = "data_cache") -> tuple[pd.DataFrame, pd.
         if "sector" in current.columns and "reason" in changes.columns:
             return current, changes
 
-    req = urllib.request.Request(WIKI_URL, headers={"User-Agent": _UA})
-    html = urllib.request.urlopen(req, timeout=30).read().decode("utf-8")
-    tables = pd.read_html(io.StringIO(html))
-
+    tables = _read_tables(WIKI_URL)
+    cur_raw = _find_current_table(tables)
+    if cur_raw is None:
+        raise ValueError(
+            f"no S&P 500 constituents table (Symbol + GICS Sector) at {WIKI_URL}; "
+            f"tables found: {[_flat_columns(t) for t in tables]}"
+        )
+    sector_col = next(c for c in cur_raw.columns if "gics sector" in c)
     current = pd.DataFrame(
         {
-            "ticker": tables[0]["Symbol"].map(_normalize_ticker),
-            "sector": tables[0]["GICS Sector"].astype(str),
+            "ticker": cur_raw["symbol"].map(_normalize_ticker),
+            "sector": cur_raw[sector_col].astype(str),
         }
     )
 
-    raw = tables[1].copy()
-    raw.columns = ["date", "added", "added_name", "removed", "removed_name", "reason"]
+    # The changes table used to live on the constituents page and now lives on
+    # its own; look on both, in that order, before giving up.
+    raw, changes_url = fetch_changes_frame(tables=tables)
+    if raw is None:
+        raise ValueError(
+            "no S&P 500 changes table (date + added/removed tickers) at "
+            f"{WIKI_URL} or {WIKI_CHANGES_URL}. The point-in-time universe "
+            "cannot be rebuilt without it; refusing to fall back to today's "
+            "members, which would be survivorship bias by construction."
+        )
+
+    dates = pd.to_datetime(raw["date"], format="%B %d, %Y", errors="coerce")
+    unparsed = dates.isna() & raw["date"].notna()
+    if unparsed.any():  # tolerate stray formats, but only via an explicit pass
+        dates = dates.fillna(pd.to_datetime(raw["date"], errors="coerce", format="mixed"))
+    parsed_frac = float(dates.notna().mean()) if len(raw) else 0.0
+    if parsed_frac < MIN_PARSED_DATE_FRAC:
+        raise ValueError(
+            f"only {parsed_frac:.1%} of change dates at {changes_url} parsed as dates "
+            f"(need >= {MIN_PARSED_DATE_FRAC:.0%}); the date column format changed. "
+            f"Examples: {raw['date'][dates.isna()].head(3).tolist()}"
+        )
+
     changes = pd.DataFrame(
         {
-            "date": pd.to_datetime(raw["date"], format="%B %d, %Y", errors="coerce"),
+            "date": dates,
             "added": raw["added"].map(lambda t: _normalize_ticker(t) if pd.notna(t) else None),
             "removed": raw["removed"].map(lambda t: _normalize_ticker(t) if pd.notna(t) else None),
             "reason": raw["reason"].map(lambda r: str(r).strip() if pd.notna(r) else None),
         }
     ).dropna(subset=["date"])
 
+    _assert_tables_sane(current, changes, changes_url)
+
     current.to_parquet(cur_path)
     changes.to_parquet(chg_path)
     return current, changes
+
+
+def _assert_tables_sane(current: pd.DataFrame, changes: pd.DataFrame, changes_url: str) -> None:
+    """Refuse a half-parsed scrape rather than silently narrowing the universe.
+
+    Every check here guards a failure that would otherwise look like a
+    result: too few members or too few changes both bias the reconstructed
+    membership toward today's survivors, and a book built on that reports an
+    edge that is hindsight.
+    """
+    n_cur = len(current)
+    if not MIN_CURRENT_MEMBERS <= n_cur <= MAX_CURRENT_MEMBERS:
+        raise ValueError(
+            f"S&P 500 constituents scrape returned {n_cur} names, outside the sane "
+            f"[{MIN_CURRENT_MEMBERS}, {MAX_CURRENT_MEMBERS}] band ({WIKI_URL})"
+        )
+    if current["ticker"].duplicated().any():
+        dupes = sorted(current.loc[current["ticker"].duplicated(), "ticker"])
+        raise ValueError(f"duplicate tickers in constituents scrape: {dupes}")
+
+    n_recent = int((changes["date"] >= pd.Timestamp("2010-01-01")).sum())
+    if n_recent < MIN_CHANGE_ROWS_SINCE_2010:
+        raise ValueError(
+            f"changes table at {changes_url} has only {n_recent} rows since 2010 "
+            f"(need >= {MIN_CHANGE_ROWS_SINCE_2010}). A short changes table rebuilds a "
+            "membership set too close to today's -- survivorship bias, silently."
+        )
+    if changes[["added", "removed"]].notna().sum().sum() == 0:
+        raise ValueError(f"changes table at {changes_url} parsed no tickers at all")
 
 
 def build_membership_intervals(

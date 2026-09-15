@@ -66,6 +66,9 @@ def main() -> None:
             f"{r['n_return_cells_changed']:,} RETURN cells changed "
             f"(max |dR| {r['max_abs_return_change']:.2e}); "
             f"{r['n_tickers_affected']} tickers touched"
+            + ("" if r["is_consecutive_cycle"] else
+               f"  [!] NON-CONSECUTIVE: spans {r['gap_weekdays']} weekdays "
+               "-- not a one-day revision measurement")
         )
     print(
         "  (price-level changes are usually whole-history re-adjustments; "
