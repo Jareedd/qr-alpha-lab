@@ -70,3 +70,38 @@ def test_empty_or_garbage_file_yields_empty_frame_not_crash():
     stamp, frame = borrow.parse_ibkr_short_file("garbage\nmore|garbage\n")
     assert frame.empty
     assert frame.attrs["n_skipped"] == 2
+
+
+def test_snapshot_records_the_universe_as_of_date(tmp_path):
+    # The collector runs even when the day's trading cycle failed (live.yml
+    # `if: always()`, added 2026-09-15 after an unrelated crash cost 26 H7
+    # snapshots), so the scored cross-section can legitimately be older than
+    # the borrow file. The record has to say so.
+    import sys, os
+    sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "scripts"))
+    import pandas as pd
+    from collect_borrow import snapshot_universe
+
+    live = tmp_path / "live"
+    live.mkdir()
+    pd.DataFrame({"ticker": ["AAPL", "MSFT"], "pred_raw": [0.1, -0.2]}).to_csv(
+        live / "predictions_2026-08-10.csv", index=False
+    )
+    pd.DataFrame({"ticker": ["AAPL"], "weight": [0.01]}).to_csv(
+        live / "weights_2026-08-10.csv", index=False
+    )
+    names, asof = snapshot_universe(str(live))
+    assert names == ["AAPL", "MSFT"]
+    assert asof == "2026-08-10"
+
+    _, frame = borrow.parse_ibkr_short_file(FIXTURE)
+    snap = borrow.build_snapshot("2026-09-16 12:00:00", frame, names, universe_asof=asof)
+    assert snap["universe_asof"] == "2026-08-10"  # older than the file stamp, and visible
+
+
+def test_snapshot_universe_is_empty_before_the_first_cycle(tmp_path):
+    import sys, os
+    sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "scripts"))
+    from collect_borrow import snapshot_universe
+
+    assert snapshot_universe(str(tmp_path)) == ([], None)

@@ -45,6 +45,7 @@ Assumptions stated:
 
 from __future__ import annotations
 
+import datetime as dt
 import glob
 import os
 import re
@@ -175,8 +176,35 @@ def revision_table(snapshots: dict[str, str]) -> pd.DataFrame:
             pd.read_parquet(snapshots[prev]), pd.read_parquet(snapshots[cur])
         )
         stats.pop("top_affected_tickers")
-        rows.append({"from": prev, "to": cur, **stats})
+        rows.append({"from": prev, "to": cur, **snapshot_gap(prev, cur), **stats})
     return pd.DataFrame(rows)
+
+
+def snapshot_gap(prior_tag: str, today_tag: str) -> dict:
+    """Calendar and weekday distance between two snapshot tags.
+
+    Recorded on EVERY comparison because the H5 series is only interpretable
+    if each record says how much time it spans. A consecutive-cycle record
+    covers one trading day of vendor rewriting; the record that follows an
+    outage covers however long the outage lasted, and the two are not the
+    same observation. The live job was down 2026-08-11 → 2026-09-15, so the
+    first record after it spans 26 weekdays -- an outlier by construction,
+    not by vendor behaviour. Stage 2 must be able to see that from the record
+    alone rather than inferring it from a gap in filenames.
+    """
+    prior_d = dt.date.fromisoformat(prior_tag)
+    today_d = dt.date.fromisoformat(today_tag)
+    cal = (today_d - prior_d).days
+    wd, cur = 0, prior_d
+    while cur < today_d:
+        cur += dt.timedelta(days=1)
+        if cur.weekday() < 5:
+            wd += 1
+    return {
+        "gap_calendar_days": cal,
+        "gap_weekdays": wd,
+        "is_consecutive_cycle": wd <= 1,
+    }
 
 
 def snapshot_revision_summary(
@@ -191,4 +219,4 @@ def snapshot_revision_summary(
         return None
     prior_tag, prior_path = prior
     stats = compare_price_snapshots(pd.read_parquet(prior_path), today_prices)
-    return {"compared_to": prior_tag, **stats}
+    return {"compared_to": prior_tag, **snapshot_gap(prior_tag, today_tag), **stats}

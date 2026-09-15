@@ -30,7 +30,14 @@ import urllib.request
 
 import pandas as pd
 
-from quantlab.universe import WIKI_URL, _UA, _normalize_ticker
+from quantlab.universe import (
+    WIKI_URL,
+    _UA,
+    _find_current_table,
+    _normalize_ticker,
+    _read_tables,
+    fetch_changes_frame,
+)
 
 _CIK_LOOKUP_URL = "https://www.sec.gov/Archives/edgar/cik-lookup-data.txt"
 _SUBMISSIONS_URL = "https://data.sec.gov/submissions/CIK{cik}.json"
@@ -169,25 +176,38 @@ def fetch_sp500_security_names(
     """{ticker: company name} from the Wikipedia S&P page — current constituents
     PLUS the added/removed names in the changes table (the free source of DEAD
     companies' names). Cached as parquet."""
-    import io
-
     path = os.path.join(cache_dir, "sp500_names.parquet")
     if os.path.exists(path):
         df = pd.read_parquet(path)
         return dict(zip(df["ticker"], df["name"]))
     os.makedirs(cache_dir, exist_ok=True)
-    req = urllib.request.Request(WIKI_URL, headers={"User-Agent": _UA})
-    html = urllib.request.urlopen(req, timeout=60).read().decode("utf-8")
-    tables = pd.read_html(io.StringIO(html))
+
+    # Both tables are selected by COLUMN NAME through quantlab.universe, which
+    # also handles the changes table having moved to its own Wikipedia page.
+    # This function used to carry its own positional copy of that parse
+    # (``tables[1]`` + a fixed six-column assignment) -- the identical latent
+    # crash that killed the live cycle for five weeks from 2026-08-11, sitting
+    # in the path that supplies DEAD companies' names to the SEC crosswalk,
+    # i.e. the thing that unblocked H1's survivorship problem.
+    tables = _read_tables(WIKI_URL)
+    cur = _find_current_table(tables)
+    if cur is None:
+        raise ValueError(f"no S&P 500 constituents table at {WIKI_URL}")
     names: dict[str, str] = {}
-    cur = tables[0]
-    for t, nm in zip(cur["Symbol"], cur["Security"]):
+    for t, nm in zip(cur["symbol"], cur["security"]):
         names[_normalize_ticker(t)] = str(nm)
-    chg = tables[1]
-    chg.columns = ["date", "added_t", "added_n", "removed_t", "removed_n", "reason"]
-    for tcol, ncol in (("added_t", "added_n"), ("removed_t", "removed_n")):
+
+    chg, chg_url = fetch_changes_frame(with_names=True, tables=tables)
+    if chg is None:
+        raise ValueError(
+            f"no S&P 500 changes table at {WIKI_URL} or the changes page; the "
+            "dead-company names it supplies are what make this crosswalk "
+            "survivorship-safe, so a current-members-only answer is refused"
+        )
+    for tcol, ncol in (("added", "added_name"), ("removed", "removed_name")):
         for t, nm in zip(chg[tcol], chg[ncol]):
             if pd.notna(t) and pd.notna(nm):
                 names.setdefault(_normalize_ticker(t), str(nm))
+    print(f"[crosswalk] {len(names)} ticker->name pairs (changes from {chg_url})")
     pd.DataFrame({"ticker": list(names), "name": list(names.values())}).to_parquet(path)
     return names

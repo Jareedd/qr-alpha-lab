@@ -123,3 +123,40 @@ def test_live_cycle_summary_needs_a_prior_snapshot(tmp_path):
     assert out["compared_to"] == "2026-06-10"
     assert out["n_price_cells_changed"] == today.size
     assert out["n_return_cells_changed"] == 0
+
+
+# ---------------------------------------------------------------------------
+# Gap provenance (added 2026-09-15, after the five-week collection outage)
+# ---------------------------------------------------------------------------
+
+def test_snapshot_gap_counts_weekdays_not_calendar_days():
+    # Fri -> Mon is one weekday of vendor rewriting, not three days of it.
+    g = revisions.snapshot_gap("2026-08-07", "2026-08-10")
+    assert g == {"gap_calendar_days": 3, "gap_weekdays": 1, "is_consecutive_cycle": True}
+
+
+def test_the_outage_record_is_marked_non_consecutive():
+    # The live job died 2026-08-11 and came back 2026-09-16; that record
+    # compares panels 26 weekdays apart. It is a legitimate measurement of a
+    # DIFFERENT quantity, and H5 stage 2 must be able to tell them apart from
+    # the record alone -- pooling it with daily records would report the
+    # outage as a vendor-revision spike.
+    g = revisions.snapshot_gap("2026-08-10", "2026-09-16")
+    assert g["gap_weekdays"] == 27
+    assert g["is_consecutive_cycle"] is False
+
+
+def test_live_summary_carries_the_gap(tmp_path):
+    today = _panel()
+    d = tmp_path / "live_2026-06-10"
+    d.mkdir()
+    (today * 1.03).to_parquet(d / "prices_x_2018-01-01_latest_0.0.parquet")
+
+    out = revisions.snapshot_revision_summary(str(tmp_path), "2026-06-11", today)
+    assert out["gap_weekdays"] == 1 and out["is_consecutive_cycle"] is True
+
+    # Same prior snapshot, but the cycle resumes a month later.
+    out = revisions.snapshot_revision_summary(str(tmp_path), "2026-07-10", today)
+    assert out["compared_to"] == "2026-06-10"
+    assert out["gap_calendar_days"] == 30
+    assert out["is_consecutive_cycle"] is False
