@@ -19,6 +19,61 @@ $ python scripts/leak_demo.py
 
 That exact gate runs in CI on every push — so a future-peeking feature anywhere in the pipeline turns the build red, not just my confidence. Full transcript: [`results/leak_demo_transcript.txt`](results/leak_demo_transcript.txt). (For an inline GIF, `asciinema rec` the command above.)
 
+## Reproduce it in ten minutes (no API keys)
+
+```
+git clone https://github.com/Jareedd/qr-alpha-lab && cd qr-alpha-lab
+pip install -r requirements-lock.txt     # pinned; the slow step
+python scripts/reproduce.py              # ~20 s of compute
+```
+
+```
+ 13/13 metrics within tolerance; 4/4 gates passed in 18.0s of compute.
+ RESULT: REPRODUCED
+```
+
+A deterministic generator (not a mystery CSV), the exact commands, the expected
+values with **stated tolerances and the reasoning behind them**, and a hard line
+between *what you can reproduce offline* and *what is a historical claim backed
+by a committed artifact*. Full detail — including an explicit list of the
+leakage the synthetic gate **cannot** catch — in [`REPRODUCE.md`](REPRODUCE.md).
+It runs in CI on every push, so the promise cannot rot.
+
+## Case study: an edge that did not survive its own control
+
+[`writeup/case_study_survivorship.md`](writeup/case_study_survivorship.md) —
+question → experiment → initial result → stronger control → revised conclusion,
+in five pages, with every number linked to a committed artifact.
+
+![Static universe vs point-in-time S&P 500](results/case_study_survivorship.png)
+
+Net Sharpe **+0.82 → −0.01**, IC **+0.033 → +0.005**, t_NW **2.22 → 0.54**, and
+turnover nearly doubles — same features, same model, same costs, one control.
+The falsification gate was green throughout and **could not have caught this**:
+synthetic panels have no delistings, so survivorship bias is invisible to them
+by construction. What caught it was a domain control motivated by a suspicious
+baseline (equal-weight Sharpe 1.00). The chart regenerates offline from the
+committed JSONs: `python scripts/case_study_chart.py`.
+
+## Operating the data, not just downloading it
+
+```
+python scripts/ingest_demo.py    # a run dies at symbol 3 of 6, then resumes
+```
+
+`src/quantlab/ingest.py` is a partitioned price store built around one
+constraint: **a run that dies halfway must leave a state a later run can safely
+continue from.** Incremental updates from a per-symbol watermark, a schema
+contract enforced *before* anything is written (a poisoned batch is quarantined
+and the stored history is untouched), atomic partition writes with a *derived*
+manifest, backfills that extend history earlier without rewriting what exists,
+and a committed per-run report that names what failed and what is still pending.
+
+The demo runs the whole arc: crash → diagnose from the committed record →
+resume exactly the pending set → verify the result is byte-identical to a clean
+single-pass run. It runs in CI. Operator CLI:
+`python scripts/ingest_prices.py --status | --resume | --audit | --backfill`.
+
 ## What makes this pipeline defensible
 
 **Planted-signal / pure-noise validation.** Before trusting any result on real data, the pipeline must pass two falsification tests:
@@ -78,23 +133,32 @@ src/quantlab/
                  # paper-only Alpaca client; predictions logged before orders
   monitor.py     # Phase 6 monitoring: cycle continuity, live IC vs backtest IC,
                  # mark-to-market of logged books (read-only by design)
+  ingest.py      # partitioned price store: incremental watermarks, schema
+                 # contract, atomic writes, derived manifest, backfill, resume
 scripts/run_pipeline.py   # end-to-end CLI (incl. CI falsification-gate flags)
+scripts/reproduce.py      # the 10-minute offline reproduction, verified in CI
+scripts/ingest_prices.py  # operator CLI: ingest / backfill / status / resume / audit
+scripts/ingest_demo.py    # crash-diagnose-resume demonstration (CI-verified)
+scripts/case_study_chart.py  # rebuilds the case-study chart from committed JSONs
 scripts/live_report.py    # one-page live-monitoring report from results/live/
-tests/                    # 386 tests across 54 files: leakage, costs, DSR
+tests/                    # 504 tests across 61 files: leakage, costs, DSR
                           # monotonicity, lookahead, baselines, vectorized-vs-naive
                           # equivalence, nested-tuning leak checks, live-order &
                           # monitor known answers, regime causality, carry/CEF/
                           # event/fundamentals/insider harnesses, PBO/CSCV,
                           # registry refusal paths
+REPRODUCE.md              # clone -> reproduce in ten minutes; tolerances and scope
+repro/expected.json       # the expected numbers the reproduction checks against
 research_log.md           # every trial ever run; owns the honest --n-trials count
-.github/workflows/ci.yml  # unit tests + falsification gate on every push
+.github/workflows/ci.yml  # tests + falsification gate + reproduction + ingest demo
 ```
 
 ## Quick start
 
 ```
 pip install -r requirements.txt
-python -m pytest tests/ -q                              # 386 tests
+python -m pytest tests/ -q                    # 494 passed, 10 skipped, ~6.5 min
+python scripts/reproduce.py                             # verify the documented numbers
 python scripts/run_pipeline.py --data planted           # sanity check 1
 python scripts/run_pipeline.py --data noise --n-trials 20   # sanity check 2
 # Real-data runs are registration-gated (law #3, mechanized): they require
@@ -138,7 +202,7 @@ For hosted platforms that support `Procfile`-based Python apps, the included `Pr
 
 ## Known limitations (deliberate honesty)
 
-Sector data is **as-of-today** (Wikipedia only lists sectors for current members), so departed names share an UNKNOWN bucket and reclassifications are invisible; point-in-time GICS needs paid data. The `--data sp500` mode reconstructs **point-in-time S&P 500 membership** from Wikipedia's changes table, which removes the worst of survivorship bias — but not all of it: names that died (bankruptcy, acquisition) often have no Yahoo price history, so they drop out of the backtest even when membership says they were tradable; the run emits a `sp500_pit_coverage.json` quantifying exactly how many. Delisting returns (the final, usually ugly, price move of a dying stock) are missing entirely — a known upward bias in all free-data backtests (Shumway 1997). That hole is **bounded, not imputed**: `--delisting-return` re-runs the backtest with an explicit synthetic final print forced on every name whose series ends mid-window (scenario-tagged artifacts, `metrics_*_dlret*.json`), so the write-up can state how far the missing returns could move the result instead of guessing. We never fill the gaps with a model: delistings are missing *because* the company died, so any imputation fit on survivors re-injects survivorship bias by construction. Names delisted within the label horizon lose their final partial period (the 21-day forward label needs a t+21 price). The legacy `--data yfinance` mode (today's members, fully biased) is kept deliberately so the two can be compared — measuring the bias is more interesting than removing it. Headline results use linear costs; square-root market impact lives in the `--capacity` sweep, not in every backtest. Sector/beta neutralization exists (`--neutralize`) but betas are estimated, not known — realized residual beta drifts to ~0.05 mean (p95 0.23) between rebalances, measured and reported per run. The first live cycle (2026-06-10) logged weights only; full prediction logging starts with the second cycle, so the live-IC record is one cycle shorter than the trading record — and the control-arm and data-revision records start later still (the baseline column and revision fingerprint were added 2026-06-11; the first revision comparison needs two dated snapshots, so it lands a day after that). Each late start is dated in the log rather than smoothed over. Free daily data only. Every one of these is a roadmap item or a permanent caveat, and naming them is part of the point.
+Sector data is **as-of-today** (Wikipedia only lists sectors for current members), so departed names share an UNKNOWN bucket and reclassifications are invisible; point-in-time GICS needs paid data. The `--data sp500` mode reconstructs **point-in-time S&P 500 membership** from Wikipedia's changes table, which removes the worst of survivorship bias — but not all of it: names that died (bankruptcy, acquisition) often have no Yahoo price history, so they drop out of the backtest even when membership says they were tradable; the run emits a `sp500_pit_coverage.json` quantifying exactly how many. Delisting returns (the final, usually ugly, price move of a dying stock) are missing entirely — a known upward bias in all free-data backtests (Shumway 1997). That hole is **bounded, not imputed**: `--delisting-return` re-runs the backtest with an explicit synthetic final print forced on every name whose series ends mid-window (scenario-tagged artifacts, `metrics_*_dlret*.json`), so the write-up can state how far the missing returns could move the result instead of guessing. We never fill the gaps with a model: delistings are missing *because* the company died, so any imputation fit on survivors re-injects survivorship bias by construction. Names delisted within the label horizon lose their final partial period (the 21-day forward label needs a t+21 price). The legacy `--data yfinance` mode (today's members, fully biased) is kept deliberately so the two can be compared — measuring the bias is more interesting than removing it. Headline results use linear costs; square-root market impact lives in the `--capacity` sweep, not in every backtest. Sector/beta neutralization exists (`--neutralize`) but betas are estimated, not known — realized residual beta drifts to ~0.05 mean (p95 0.23) between rebalances, measured and reported per run. The first live cycle (2026-06-10) logged weights only; full prediction logging starts with the second cycle, so the live-IC record is one cycle shorter than the trading record — and the control-arm and data-revision records start later still (the baseline column and revision fingerprint were added 2026-06-11; the first revision comparison needs two dated snapshots, so it lands a day after that). Each late start is dated in the log rather than smoothed over. Free daily data only. The **ingest store** (`src/quantlab/ingest.py`) is demonstrated and tested against a synthetic vendor, not against a production feed: what is proven is the store's failure semantics (atomicity, quarantine, resume, idempotence), not that a real vendor will misbehave only in the ways modelled here — and the research pipeline still reads through `quantlab.data`, not through the store, so the store is an operability exhibit rather than the live data path. The **reproduction harness** covers the synthetic falsification machinery only; the real-data trials are historical claims backed by committed artifacts and cannot be re-derived from this repo (see `REPRODUCE.md`). Every one of these is a roadmap item or a permanent caveat, and naming them is part of the point.
 
 ## References
 

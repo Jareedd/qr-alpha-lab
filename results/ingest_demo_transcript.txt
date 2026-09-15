@@ -1,0 +1,77 @@
+
+========================================================================
+ 1. First load: six symbols, 2024-01-01 -> 2024-03-01
+========================================================================
+run 20260908T204823.569855 (incremental)  0.0s
+  ok       6
+  store now holds 6 symbols, 270 rows
+
+========================================================================
+ 2. Incremental update to 2024-06-28: only the gap is fetched
+========================================================================
+run 20260908T204823.664962 (incremental)  0.0s
+  ok       6
+  every fetch started at the watermark, not at 2024-01-01: ['2024-03-01']
+  rows added per symbol: {'AAPL': 85, 'MSFT': 85, 'GOOGL': 85, 'AMZN': 85, 'META': 85, 'NVDA': 85}
+
+========================================================================
+ 3. Rerun the same window: safe, and a no-op
+========================================================================
+  every partition byte-identical after a full rerun: True
+  content hashes unchanged: True
+
+========================================================================
+ 4. Backfill: extend history EARLIER without disturbing what exists
+========================================================================
+  AAPL span 2024-01-01..2024-06-28  ->  2023-06-01..2024-06-28
+  rows 130 -> 282; index still unique: True
+  previously-stored rows untouched by the backfill: True
+
+========================================================================
+ 5. Schema validation: a poisoned batch is quarantined, not stored
+========================================================================
+run 20260908T204823.889763 (full)  0.0s
+  invalid  1
+  FAILED META: META: close has non-positive value(s)
+  META partition unchanged after the rejection: True
+
+========================================================================
+ 6. THE FAILURE: the run dies while processing symbol 3 of 6
+========================================================================
+  run died: KeyboardInterrupt(pod evicted mid-run)
+
+========================================================================
+ 7. DIAGNOSE from the committed record, not from memory
+========================================================================
+  symbols landed        : ['AAPL', 'MSFT']
+  store consistent      : True  (unindexed=[], drift=[])
+  run report on disk    : _runs/run_20260908T204823.934817.json
+  completed in that run : ['AAPL', 'MSFT']
+  PENDING (resume plan) : ['GOOGL', 'AMZN', 'META', 'NVDA']
+
+  Note: the store is PARTIAL but CONSISTENT. Partitions are written
+  atomically and the manifest is derived from them, so a crash leaves
+  a smaller store -- never a corrupt one.
+
+========================================================================
+ 8. RESUME exactly the pending work
+========================================================================
+run 20260908T204823.959336 (incremental)  0.0s
+  ok       4
+  store now holds 6 symbols
+
+========================================================================
+ 9. VERIFY: identical to a clean single-pass run
+========================================================================
+  symbols match     : True
+  every row matches : True
+  store consistent  : True
+  nothing pending   : True
+
+========================================================================
+ RESULT
+========================================================================
+  Crash at symbol 3 of 6 -> partial but consistent store -> resume plan
+  read off the committed run report -> resumed store byte-identical to a
+  clean single-pass run. Incremental, backfill, validation and rerun
+  safety all demonstrated on the same store.
