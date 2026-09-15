@@ -26,3 +26,14 @@ jobs:
         run: python scripts/run_pipeline.py --data planted --fail-if-dsr-below 0.95
       - name: Falsification gate — noise must be rejected
         run: python scripts/run_pipeline.py --data noise --n-trials 20 --fail-if-dsr-above 0.5
+      # The reproduction claim is checked on every push too. A README that says
+      # "clone it and reproduce in ten minutes" is a promise; this is the test
+      # that the promise still holds, on a clean runner, from the documented
+      # commands, against repro/expected.json.
+      - name: Reproduction — documented numbers must still hold
+        run: python scripts/reproduce.py
+      # The operability demo: a run dies at symbol 3 of 6, is diagnosed from
+      # the committed report, and resumes to a store byte-identical to a clean
+      # single-pass run. Exits non-zero if any of that stops being true.
+      - name: Ingest — crash, diagnose, resume without corruption
+        run: python scripts/ingest_demo.py

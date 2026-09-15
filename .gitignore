@@ -42,3 +42,10 @@ scratch_refute/
 # never commit cache archives / vendor data dumps
 data_cache.zip
 *.zip
+
+# Local ingest store: partitions, derived manifest and run reports are
+# operational state, not source. The demo builds its own in a temp dir.
+data_store/
+
+# Written by scripts/reproduce.py on every run.
+results/repro_report.json

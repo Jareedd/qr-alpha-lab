@@ -108,6 +108,15 @@ def main() -> None:
         "already-logged work (e.g. 'trial #5 artifacts for capacity sweep') "
         "-- not a new trial, no N increment.",
     )
+    ap.add_argument(
+        "--seed",
+        type=int,
+        default=7,
+        help="RNG seed for the synthetic panel generators (law #8: every "
+        "result must be regenerable from a config + seed). Ignored for real "
+        "data, where the 'seed' is the vendor snapshot. Recorded in the "
+        "metrics JSON so an artifact names the config that produced it.",
+    )
     ap.add_argument("--out", default="results")
     ap.add_argument(
         "--fail-if-dsr-below",
@@ -185,7 +194,7 @@ def main() -> None:
     else:
         from quantlab.synthetic import make_panel
 
-        prices = make_panel(mode=args.data)
+        prices = make_panel(mode=args.data, seed=args.seed)
         sectors = prices.attrs.get("sectors", {})
     print(f"[data] {prices.shape[1]} assets x {prices.shape[0]} days ({args.data})")
 
@@ -335,6 +344,20 @@ def main() -> None:
         tag += f"_r{args.rebalance}"
     if args.delisting_return is not None:
         tag += f"_dlret{round(args.delisting_return * 100):+d}"
+    # Law #8: the artifact must name the config that produced it. Without
+    # this the seed lived only in a default argument and no committed result
+    # could be tied back to the run that made it.
+    stats["config"] = {
+        "data": args.data,
+        "model": args.model,
+        "seed": args.seed if args.data in ("planted", "noise", "planted_regime") else None,
+        "horizon": args.horizon,
+        "rebalance": args.rebalance or args.horizon,
+        "label": args.label,
+        "neutralize": args.neutralize,
+        "cost_bps": args.cost_bps,
+        "n_trials": args.n_trials,
+    }
     with open(os.path.join(args.out, f"metrics_{tag}.json"), "w") as f:
         json.dump(stats, f, indent=2)
     if args.data == "sp500":
