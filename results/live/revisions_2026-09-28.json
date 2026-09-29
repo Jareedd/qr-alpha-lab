@@ -1,0 +1,41 @@
+{
+  "compared_to": "2026-09-26",
+  "gap_calendar_days": 3,
+  "gap_weekdays": 2,
+  "is_consecutive_cycle": false,
+  "n_shared_dates": 484,
+  "n_shared_tickers": 502,
+  "n_cells_compared": 241923,
+  "n_price_cells_changed": 1452,
+  "frac_price_cells_changed": 0.006001909698540445,
+  "max_abs_rel_price_change": 0.00813488871848611,
+  "n_return_cells_compared": 241421,
+  "n_return_cells_changed": 0,
+  "frac_return_cells_changed": 0.0,
+  "max_abs_return_change": 0.0,
+  "n_tickers_affected": 3,
+  "n_price_cells_noise_band": 71897,
+  "n_return_cells_noise_band": 97550,
+  "n_cells_appeared": 0,
+  "n_cells_vanished": 0,
+  "top_affected_tickers": [
+    {
+      "ticker": "KDP",
+      "n_price_cells": 484,
+      "max_abs_rel_change": 0.00719906007422022,
+      "n_return_cells": 0
+    },
+    {
+      "ticker": "MDT",
+      "n_price_cells": 484,
+      "max_abs_rel_change": 0.00813488871848611,
+      "n_return_cells": 0
+    },
+    {
+      "ticker": "RL",
+      "n_price_cells": 484,
+      "max_abs_rel_change": 0.002842295838391795,
+      "n_return_cells": 0
+    }
+  ]
+}

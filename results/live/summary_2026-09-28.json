@@ -1,0 +1,29 @@
+{
+  "asof": "2026-09-28",
+  "n_names": 98,
+  "submitted": true,
+  "equity": 987690.55,
+  "orders_sent": 152,
+  "orders_failed": [
+    {
+      "symbol": "APP",
+      "qty": 58,
+      "side": "sell",
+      "error": "{\"available\":\"28\",\"code\":40310000,\"existing_qty\":\"28\",\"held_for_orders\":\"0\",\"message\":\"insufficient qty available for or"
+    },
+    {
+      "symbol": "INTC",
+      "qty": 166,
+      "side": "sell",
+      "error": "{\"available\":\"87\",\"code\":40310000,\"existing_qty\":\"87\",\"held_for_orders\":\"0\",\"message\":\"insufficient qty available for or"
+    }
+  ],
+  "n_failed": 2,
+  "revisions": {
+    "compared_to": "2026-09-26",
+    "gap_weekdays": 2,
+    "is_consecutive_cycle": false,
+    "frac_price_cells_changed": 0.006001909698540445,
+    "n_return_cells_changed": 0
+  }
+}
