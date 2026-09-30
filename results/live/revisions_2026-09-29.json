@@ -1,0 +1,22 @@
+{
+  "compared_to": "2026-09-29",
+  "gap_calendar_days": 1,
+  "gap_weekdays": 1,
+  "is_consecutive_cycle": true,
+  "n_shared_dates": 486,
+  "n_shared_tickers": 507,
+  "n_cells_compared": 245353,
+  "n_price_cells_changed": 0,
+  "frac_price_cells_changed": 0.0,
+  "max_abs_rel_price_change": 0.0,
+  "n_return_cells_compared": 244846,
+  "n_return_cells_changed": 0,
+  "frac_return_cells_changed": 0.0,
+  "max_abs_return_change": 0.0,
+  "n_tickers_affected": 0,
+  "n_price_cells_noise_band": 72442,
+  "n_return_cells_noise_band": 96562,
+  "n_cells_appeared": 0,
+  "n_cells_vanished": 0,
+  "top_affected_tickers": []
+}
