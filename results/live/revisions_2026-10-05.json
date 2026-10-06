@@ -1,0 +1,83 @@
+{
+  "compared_to": "2026-10-03",
+  "gap_calendar_days": 3,
+  "gap_weekdays": 2,
+  "is_consecutive_cycle": false,
+  "n_shared_dates": 489,
+  "n_shared_tickers": 507,
+  "n_cells_compared": 246868,
+  "n_price_cells_changed": 5379,
+  "frac_price_cells_changed": 0.021788972244276294,
+  "max_abs_rel_price_change": 0.011758108325455763,
+  "n_return_cells_compared": 246361,
+  "n_return_cells_changed": 0,
+  "frac_return_cells_changed": 0.0,
+  "max_abs_return_change": 0.0,
+  "n_tickers_affected": 11,
+  "n_price_cells_noise_band": 71860,
+  "n_return_cells_noise_band": 101346,
+  "n_cells_appeared": 0,
+  "n_cells_vanished": 0,
+  "top_affected_tickers": [
+    {
+      "ticker": "BMY",
+      "n_price_cells": 489,
+      "max_abs_rel_change": 0.010250778119436643,
+      "n_return_cells": 0
+    },
+    {
+      "ticker": "CSCO",
+      "n_price_cells": 489,
+      "max_abs_rel_change": 0.0038619397551188372,
+      "n_return_cells": 0
+    },
+    {
+      "ticker": "ERIE",
+      "n_price_cells": 489,
+      "max_abs_rel_change": 0.006617392835823965,
+      "n_return_cells": 0
+    },
+    {
+      "ticker": "GE",
+      "n_price_cells": 489,
+      "max_abs_rel_change": 0.001518577294644552,
+      "n_return_cells": 0
+    },
+    {
+      "ticker": "GL",
+      "n_price_cells": 489,
+      "max_abs_rel_change": 0.0019921199179312454,
+      "n_return_cells": 0
+    },
+    {
+      "ticker": "IEX",
+      "n_price_cells": 489,
+      "max_abs_rel_change": 0.0031761816125941422,
+      "n_return_cells": 0
+    },
+    {
+      "ticker": "PM",
+      "n_price_cells": 489,
+      "max_abs_rel_change": 0.00850274217018887,
+      "n_return_cells": 0
+    },
+    {
+      "ticker": "ROP",
+      "n_price_cells": 489,
+      "max_abs_rel_change": 0.002509997195308644,
+      "n_return_cells": 0
+    },
+    {
+      "ticker": "RSG",
+      "n_price_cells": 489,
+      "max_abs_rel_change": 0.003237212152762514,
+      "n_return_cells": 0
+    },
+    {
+      "ticker": "SYY",
+      "n_price_cells": 489,
+      "max_abs_rel_change": 0.0070723519582814864,
+      "n_return_cells": 0
+    }
+  ]
+}
