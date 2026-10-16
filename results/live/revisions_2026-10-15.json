@@ -1,0 +1,53 @@
+{
+  "compared_to": "2026-10-15",
+  "gap_calendar_days": 1,
+  "gap_weekdays": 1,
+  "is_consecutive_cycle": true,
+  "n_shared_dates": 498,
+  "n_shared_tickers": 508,
+  "n_cells_compared": 251346,
+  "n_price_cells_changed": 2490,
+  "frac_price_cells_changed": 0.009906662528944165,
+  "max_abs_rel_price_change": 0.013233366114022371,
+  "n_return_cells_compared": 250838,
+  "n_return_cells_changed": 0,
+  "frac_return_cells_changed": 0.0,
+  "max_abs_return_change": 0.0,
+  "n_tickers_affected": 5,
+  "n_price_cells_noise_band": 74185,
+  "n_return_cells_noise_band": 101222,
+  "n_cells_appeared": 68,
+  "n_cells_vanished": 0,
+  "top_affected_tickers": [
+    {
+      "ticker": "ABT",
+      "n_price_cells": 498,
+      "max_abs_rel_change": 0.006118529051087895,
+      "n_return_cells": 0
+    },
+    {
+      "ticker": "DAL",
+      "n_price_cells": 498,
+      "max_abs_rel_change": 0.002805236613849238,
+      "n_return_cells": 0
+    },
+    {
+      "ticker": "EME",
+      "n_price_cells": 498,
+      "max_abs_rel_change": 0.0005368698594797605,
+      "n_return_cells": 0
+    },
+    {
+      "ticker": "FCX",
+      "n_price_cells": 498,
+      "max_abs_rel_change": 0.002154887077665979,
+      "n_return_cells": 0
+    },
+    {
+      "ticker": "MAA",
+      "n_price_cells": 498,
+      "max_abs_rel_change": 0.013233366114022371,
+      "n_return_cells": 0
+    }
+  ]
+}
