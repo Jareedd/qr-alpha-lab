@@ -1,4 +1,4 @@
-# Live paper-trading monitor — as of 2026-10-16
+# Live paper-trading monitor — as of 2026-10-17
 
 ## Cycle continuity
 - cycles logged: **51** (2026-06-10 → latest 2026-10-15)
