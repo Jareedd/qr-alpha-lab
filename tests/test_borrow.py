@@ -74,8 +74,9 @@ def test_empty_or_garbage_file_yields_empty_frame_not_crash():
 
 def test_snapshot_records_the_universe_as_of_date(tmp_path):
     # The collector runs even when the day's trading cycle failed (live.yml
-    # `if: always()`, added 2026-09-15 after an unrelated crash cost 26 H7
-    # snapshots), so the scored cross-section can legitimately be older than
+    # `if: always()`, added 2026-09-15 after the trade-step crash also took
+    # the borrow snapshot down — there is no borrow file for 2026-08-11
+    # through 2026-09-14), so the scored cross-section can legitimately be older than
     # the borrow file. The record has to say so.
     import sys, os
     sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "scripts"))

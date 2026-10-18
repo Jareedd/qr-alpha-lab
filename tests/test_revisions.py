@@ -11,6 +11,7 @@ import sys
 
 import numpy as np
 import pandas as pd
+import pytest
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
@@ -136,13 +137,14 @@ def test_snapshot_gap_counts_weekdays_not_calendar_days():
 
 
 def test_the_outage_record_is_marked_non_consecutive():
-    # The live job died 2026-08-11 and came back 2026-09-16; that record
-    # compares panels 26 weekdays apart. It is a legitimate measurement of a
-    # DIFFERENT quantity, and H5 stage 2 must be able to tell them apart from
-    # the record alone -- pooling it with daily records would report the
-    # outage as a vendor-revision spike.
-    g = revisions.snapshot_gap("2026-08-10", "2026-09-16")
-    assert g["gap_weekdays"] == 27
+    # Verified from results/live filenames (2026-10-18): last weights file
+    # before the gap is 2026-08-10, first one back is 2026-09-28. That record
+    # spans the whole outage and is a different quantity from a one-day
+    # revision. Pooling it with daily records would report the outage as a
+    # vendor-revision spike. (An older note used 2026-09-16 and "26 weekdays";
+    # that date is not a logged cycle, and 26 counts only through 2026-09-15.)
+    g = revisions.snapshot_gap("2026-08-10", "2026-09-28")
+    assert g["gap_weekdays"] == 35
     assert g["is_consecutive_cycle"] is False
 
 
@@ -160,3 +162,69 @@ def test_live_summary_carries_the_gap(tmp_path):
     assert out["compared_to"] == "2026-06-10"
     assert out["gap_calendar_days"] == 30
     assert out["is_consecutive_cycle"] is False
+
+
+def test_subthreshold_price_wobble_is_not_a_return_revision():
+    # Absolute |Δr| > 1e-6 used to flag serving noise. Two adjacent prices
+    # each move by just under REL_TOL in opposite directions: no price cell
+    # is over the price threshold, but |Δr| ≈ 2*REL_TOL used to count.
+    old = _panel(n_days=8)
+    eps = 0.9 * revisions.REL_TOL
+    wiggle = np.where(np.arange(len(old)) % 2 == 0, 1.0 + eps, 1.0 - eps)
+    new = old.copy()
+    new["AAA"] = old["AAA"].to_numpy() * wiggle
+    stats = revisions.compare_price_snapshots(old, new)
+    assert stats["n_price_cells_changed"] == 0
+    assert stats["n_return_cells_changed"] == 0
+    assert stats["n_return_cells_noise_band"] > 0
+
+
+def test_a_real_splice_still_counts_as_one_return_revision():
+    old = _panel()
+    new = old.copy()
+    new.iloc[4:, new.columns.get_loc("BBB")] *= 1.05
+    stats = revisions.compare_price_snapshots(old, new)
+    assert stats["n_return_cells_changed"] == 1
+    assert stats["n_price_cells_changed"] > 0
+
+
+def test_explicit_marker_beats_whichever_filename_sorts_last(tmp_path):
+    # The bug: sorted(prices_*.parquet)[-1] picked the report panel once
+    # both files shared the live directory. zzz sorts after aaa.
+    d = tmp_path / "live_2026-08-10"
+    d.mkdir()
+    live = _panel()
+    report = _panel(n_days=4) * 2
+    live_name = "prices_aaa_2018-01-01_latest_0.0.parquet"
+    report_name = "prices_zzz_2024-10-18_latest_0.0.parquet"
+    live.to_parquet(d / live_name)
+    report.to_parquet(d / report_name)
+
+    # No marker: the 2018-01-01 token is the live panel, not the sort-last file.
+    chosen = revisions.find_price_snapshot(str(d))
+    assert chosen.endswith(live_name)
+    assert revisions.snapshot_selection(str(d)) == "live_start_fallback"
+
+    # Marker naming the sort-FIRST file is explicit and wins over both heuristics.
+    # Point it at the report name on purpose: explicit means that file, not a guess.
+    revisions.write_live_panel_marker(str(d), str(d / report_name))
+    assert revisions.find_price_snapshot(str(d)).endswith(report_name)
+    assert revisions.snapshot_selection(str(d)) == "explicit"
+
+    summary_dir = tmp_path / "live_2026-08-07"
+    summary_dir.mkdir()
+    live.to_parquet(summary_dir / "prices_only_2018-01-01_latest_0.0.parquet")
+    out = revisions.snapshot_revision_summary(str(tmp_path), "2026-08-10", live)
+    assert out["comparison_selection"] == "sole_parquet"
+    assert out["comparison_file"].startswith("prices_only_")
+    assert "prior_bar" in out and "today_bar" in out
+
+
+def test_two_unmarked_live_panels_are_not_guessed(tmp_path):
+    d = tmp_path / "live_2026-08-10"
+    d.mkdir()
+    panel = _panel()
+    panel.to_parquet(d / "prices_aaa_2018-01-01_latest_0.0.parquet")
+    panel.to_parquet(d / "prices_zzz_2018-01-01_latest_0.0.parquet")
+    with pytest.raises(revisions.AmbiguousPriceSnapshot, match="sorts last"):
+        revisions.find_price_snapshot(str(d))

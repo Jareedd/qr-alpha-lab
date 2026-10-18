@@ -31,6 +31,20 @@ import pandas as pd
 from quantlab import monitor
 
 
+def report_cache_dir(now: dt.datetime | None = None, root: str = "data_cache") -> str:
+    """Price cache for this report. Not ``data_cache/live_*``.
+
+    From 2026-08-10 this report wrote its parquet into the live cycle's
+    directory. The revision monitor then did ``sorted(prices_*.parquet)[-1]``
+    and compared whichever digest sorted last — the report's shorter panel,
+    not the panel the cycle traded. The report now has its own directory,
+    keyed by the New York session date, same clock as the live cache.
+    """
+    from quantlab.live import ny_session_date
+
+    return os.path.join(root, f"report_{ny_session_date(now).isoformat()}")
+
+
 def panel_staleness_days(last_cycle: pd.Timestamp, price_index: pd.Index) -> int:
     """Days the price panel lags the last logged cycle (>0 = stale).
 
@@ -81,9 +95,10 @@ def main() -> None:
         # A "latest"-keyed parquet under the default cache dir is frozen at
         # first download, and the CI cache restores it every night -- this
         # report ran six weeks on a June price panel, saying "0 measurable
-        # cycles" while ~17 had matured. Per-day snapshot dirs (live.py's own
-        # pattern, pruned to 7 in CI) keep the report's prices <= 1 day old.
-        cache_dir = os.path.join("data_cache", f"live_{dt.date.today().isoformat()}")
+        # cycles" while ~17 had matured. Its own per-day directory (not the
+        # live cycle's — sharing that folder made the revision monitor
+        # compare the wrong panel) keeps the report's prices <= 1 day old.
+        cache_dir = report_cache_dir()
         prices = load_prices(tickers, start=start, min_coverage=0.0, cache_dir=cache_dir)
         live_ic = monitor.realized_live_ic(
             preds_by_date, prices, horizon=args.horizon

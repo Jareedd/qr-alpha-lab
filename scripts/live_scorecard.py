@@ -37,8 +37,10 @@ W, H = 820, 310
 # A live experiment that has quietly stopped is worse than no live experiment:
 # the scorecard keeps rendering, the workflow keeps going green, and the
 # artifact a reader sees still says "nightly". That is exactly what happened
-# between 2026-08-11 and 2026-09-15 -- 25 weekday cycles lost to a crash in the
-# universe scrape, with every signal in the repo reporting success. So the
+# between 2026-08-11 and 2026-09-25 -- 34 weekdays, 33 NYSE sessions, with
+# every signal in the repo reporting success. The first logged cycle back is
+# 2026-09-28. Older comments that say "25 weekdays" or "through 2026-09-15"
+# stop the count on the day the alarm was added, which was mid-outage. So the
 # renderer measures its own freshness and says so, on the artifact itself.
 STALE_AFTER_WEEKDAYS = 3
 

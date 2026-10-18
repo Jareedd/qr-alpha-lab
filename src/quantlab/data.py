@@ -217,6 +217,28 @@ def _extract_field(raw: pd.DataFrame, field: str, chunk: list[str]) -> pd.DataFr
     return part
 
 
+def _panel_reaches(cached: pd.DataFrame, min_last_bar) -> bool:
+    """True when a cached panel's last bar is on or after ``min_last_bar``.
+
+    An open-ended cache can be minutes old and still end on the previous
+    session: the live job keys a directory per day and restores it from
+    the Actions cache, so "mtime < 1 day" is not "this file contains
+    tonight's close". ``min_last_bar is None`` leaves the mtime rule alone
+    (research loads of a closed window do not pass it).
+    """
+    if min_last_bar is None:
+        return True
+    if len(cached.index) == 0:
+        return False
+    last = pd.Timestamp(cached.index.max())
+    if last.tzinfo is not None:
+        last = last.tz_convert("UTC").tz_localize(None)
+    need = pd.Timestamp(min_last_bar)
+    if need.tzinfo is not None:
+        need = need.tz_convert("UTC").tz_localize(None)
+    return last.normalize() >= need.normalize()
+
+
 def _cache_is_fresh(cache_path: str, open_ended: bool, max_age_days: float) -> tuple[bool, float]:
     """Age a cache file and decide whether it may be served.
 
@@ -241,6 +263,7 @@ def _download_field(
     min_symbols: int = 1,
     refresh: bool = False,
     max_cache_age_days: float = LATEST_CACHE_MAX_AGE_DAYS,
+    min_last_bar=None,
 ) -> pd.DataFrame:
     """Chunked yfinance download of one OHLCV field, cached to parquet."""
     tickers, start_ts, end_ts = _validate_request(
@@ -276,19 +299,29 @@ def _download_field(
                 )
                 report.warnings.append(f"unreadable cache refetched: {exc}")
             else:
-                report.source = "cache"
-                report.cache_age_days = round(age_days, 4)
-                report.returned = tuple(c for c in cached.columns)
-                report.missing = tuple(t for t in tickers if t not in set(cached.columns))
-                report.rows = len(cached)
-                if report.missing:
+                if not _panel_reaches(cached, min_last_bar):
                     logger.info(
-                        "%s cache hit with %d/%d symbols (missing: %s)",
-                        field, len(report.returned), len(tickers),
-                        _preview(report.missing),
+                        "%s cache %s ends %s, before required bar %s; refetching",
+                        field, cache_path, cached.index.max(), min_last_bar,
                     )
-                cached.attrs["download_report"] = report
-                return cached
+                    report.warnings.append(
+                        f"cache ends {pd.Timestamp(cached.index.max()).date()} "
+                        f"before required bar {min_last_bar}; refetched"
+                    )
+                else:
+                    report.source = "cache"
+                    report.cache_age_days = round(age_days, 4)
+                    report.returned = tuple(c for c in cached.columns)
+                    report.missing = tuple(t for t in tickers if t not in set(cached.columns))
+                    report.rows = len(cached)
+                    if report.missing:
+                        logger.info(
+                            "%s cache hit with %d/%d symbols (missing: %s)",
+                            field, len(report.returned), len(tickers),
+                            _preview(report.missing),
+                        )
+                    cached.attrs["download_report"] = report
+                    return cached
         else:
             logger.info(
                 "%s cache %s is %.2f days old and the window is open-ended; refetching",
@@ -423,6 +456,7 @@ def load_prices(
     min_symbols: int = 1,
     refresh: bool = False,
     max_cache_age_days: float = LATEST_CACHE_MAX_AGE_DAYS,
+    min_last_bar=None,
 ) -> pd.DataFrame:
     """Return a (date x ticker) DataFrame of adjusted close prices.
 
@@ -444,6 +478,11 @@ def load_prices(
 
     ``refresh``: bypass the cache and refetch (the cache is then rewritten).
 
+    ``min_last_bar``: when set, an otherwise fresh open-ended cache whose
+    last index is strictly before this date is refetched. The live cycle
+    passes the New York session date so a directory restored from the
+    previous night cannot be served as tonight's close.
+
     The result carries a :class:`DownloadReport` in ``df.attrs['download_report']``
     describing missing symbols, dropped columns and cache provenance. NOTE:
     ``attrs`` do not survive a parquet round-trip, so the report is rebuilt on
@@ -457,6 +496,7 @@ def load_prices(
         tickers, "Close", start, end, cache_dir, min_coverage, chunk_size,
         min_symbols=min_symbols, refresh=refresh,
         max_cache_age_days=max_cache_age_days,
+        min_last_bar=min_last_bar,
     )
 
 
