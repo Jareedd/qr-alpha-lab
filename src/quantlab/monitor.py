@@ -34,6 +34,7 @@ Assumptions stated:
 
 from __future__ import annotations
 
+import json
 import os
 import re
 
@@ -44,6 +45,7 @@ from quantlab import features, metrics
 
 _PRED_RE = re.compile(r"predictions_(\d{4}-\d{2}-\d{2})\.csv")
 _WEIGHTS_RE = re.compile(r"weights_(\d{4}-\d{2}-\d{2})\.csv")
+_SUMMARY_RE = re.compile(r"summary_(\d{4}-\d{2}-\d{2})\.json")
 
 
 def load_live_records(
@@ -120,19 +122,52 @@ def live_vs_backtest(
     }
 
 
+def load_orders_paused_dates(live_dir: str) -> set[pd.Timestamp]:
+    """As-of dates whose summary says orders were not sent.
+
+    A paused cycle still logs a target book. That target is not what the
+    broker holds, so book P&L must keep the previous submitted book
+    instead of marking the unsent weights.
+    """
+    paused: set[pd.Timestamp] = set()
+    if not os.path.isdir(live_dir):
+        return paused
+    for fn in os.listdir(live_dir):
+        m = _SUMMARY_RE.fullmatch(fn)
+        if not m:
+            continue
+        try:
+            with open(os.path.join(live_dir, fn)) as fh:
+                payload = json.load(fh)
+        except (OSError, json.JSONDecodeError):
+            continue
+        if payload.get("orders_status") == "paused" or payload.get("orders_paused") is True:
+            paused.add(pd.Timestamp(m.group(1)))
+    return paused
+
+
 def realized_book_returns(
-    weights_by_date: dict[pd.Timestamp, pd.Series], prices: pd.DataFrame
+    weights_by_date: dict[pd.Timestamp, pd.Series],
+    prices: pd.DataFrame,
+    hold_dates: set[pd.Timestamp] | None = None,
 ) -> pd.Series:
     """Daily mark-to-market of the logged books, gross, from public prices.
 
     The book logged at t earns from t+1 until the next logged book takes
     over (the backtest convention). A held name with a missing price
     contributes nothing that day (limitation: a delisting between cycles is
-    under-counted here; the broker record is authoritative)."""
+    under-counted here; the broker record is authoritative).
+
+    ``hold_dates`` are cycles that logged a target but did not send it
+    (``orders_status=paused``). Those weights are skipped, so the previous
+    submitted book stays in force. Predictions on those dates are a
+    separate record and are not dropped from the IC series.
+    """
+    held = {pd.Timestamp(d) for d in (hold_dates or set())}
     rets = prices.pct_change(fill_method=None)
     book = pd.DataFrame(np.nan, index=prices.index, columns=prices.columns)
     for d, w in weights_by_date.items():
-        if d not in book.index:
+        if d not in book.index or d in held:
             continue
         cols = w.index.intersection(book.columns)
         book.loc[d, :] = 0.0
@@ -153,6 +188,7 @@ def render_report(
     horizon: int = 21,
     baseline_live_ic: pd.Series | None = None,
     revisions: list[dict] | None = None,
+    n_orders_paused: int = 0,
 ) -> str:
     """One-page markdown report. Purely descriptive: it never says the live
     experiment 'works', only what was measured and what cannot be measured
@@ -239,6 +275,12 @@ def render_report(
             "- cross-check only: fills, costs and shorts-availability live at "
             "the broker; the Alpaca equity curve is authoritative",
         ]
+        if n_orders_paused:
+            lines.append(
+                f"- **orders paused on {n_orders_paused} logged cycle(s):** "
+                "those weight files are the unsent target. Book P&L keeps "
+                "the last submitted book, so a pause is not a rebalance."
+            )
     else:
         lines.append("- no marked days yet (first book earns from its t+1 open)")
     lines += [

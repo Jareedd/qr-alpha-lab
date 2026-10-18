@@ -118,6 +118,102 @@ def test_live_records_are_write_once(tmp_path):
     live.assert_write_once([str(fresh)])
 
 
+def test_orders_are_paused_unless_the_switch_is_explicit():
+    # The nightly job calls run_daily(submit=True). That must NOT mean
+    # "send orders" once the operational pause is the default.
+    assert live.resolve_orders_status(True, None) == "paused"
+    assert live.resolve_orders_status(True, "") == "paused"
+    assert live.resolve_orders_status(True, "0") == "paused"
+    assert live.resolve_orders_status(True, "false") == "paused"
+    assert live.resolve_orders_status(True, "off") == "paused"
+    for on in ("1", "true", "YES", "on"):
+        assert live.resolve_orders_status(True, on) == "submit"
+    # A dry-run is not the operational pause, and it wins over a truthy env.
+    assert live.resolve_orders_status(False, "1") == "dry_run"
+    with pytest.raises(ValueError, match="QR_SUBMIT_ORDERS"):
+        live.resolve_orders_status(True, "maybe")
+
+
+def test_submit_orders_flag_is_the_reenable_and_dry_run_conflicts():
+    assert live.submission_inputs(False, False) == (True, None)
+    assert live.submission_inputs(False, True) == (True, "1")
+    assert live.submission_inputs(True, False) == (False, None)
+    with pytest.raises(ValueError, match="only one"):
+        live.submission_inputs(True, True)
+
+
+class _Broker:
+    """In-memory stand-in. No network, no Alpaca."""
+
+    def __init__(self):
+        self.sent = []
+
+    def account(self):
+        return {"equity": "100000"}
+
+    def positions(self):
+        return {"BBB": 10}
+
+    def submit_order(self, symbol, qty, side):
+        self.sent.append({"symbol": symbol, "qty": qty, "side": side})
+        return {"id": "not-a-real-order"}
+
+
+def test_paused_cycle_does_not_construct_a_broker_and_marks_the_record():
+    def boom():
+        raise AssertionError("paused cycle constructed a broker")
+
+    summary = live.record_order_submission(
+        {"asof": "2026-10-20", "n_names": 4, "submitted": False},
+        "paused",
+        broker_factory=boom,
+        target_weights=pd.Series({"AAA": 0.02}),
+        last_prices=pd.Series({"AAA": 100.0}),
+    )
+    assert summary["submitted"] is False
+    assert summary["orders_paused"] is True
+    assert summary["orders_status"] == "paused"
+    assert "ORDERS PAUSED" in summary["orders_note"]
+    assert "equity" not in summary
+    assert "re-enable" in summary["orders_note"].lower() or "Re-enable" in summary["orders_note"]
+
+
+def test_dry_run_record_is_not_marked_paused():
+    def boom():
+        raise AssertionError("dry-run constructed a broker")
+
+    summary = live.record_order_submission(
+        {"asof": "2026-10-20", "n_names": 4, "submitted": False},
+        "dry_run",
+        broker_factory=boom,
+        target_weights=pd.Series({"AAA": 0.02}),
+        last_prices=pd.Series({"AAA": 100.0}),
+    )
+    assert summary["orders_status"] == "dry_run"
+    assert summary["orders_paused"] is False
+    assert summary["submitted"] is False
+
+
+def test_submit_status_uses_the_broker_and_marks_submitted():
+    broker = _Broker()
+    summary = live.record_order_submission(
+        {"asof": "2026-10-20", "n_names": 1, "submitted": False},
+        "submit",
+        broker_factory=lambda: broker,
+        target_weights=pd.Series({"AAA": 0.02, "BBB": 0.0}),
+        last_prices=pd.Series({"AAA": 100.0, "BBB": 50.0}),
+    )
+    assert summary["submitted"] is True
+    assert summary["orders_paused"] is False
+    assert summary["orders_status"] == "submit"
+    assert summary["equity"] == 100_000.0
+    # 0.02 * 100000 / 100 = 20 shares, minus no current AAA; BBB held 10 -> flatten.
+    assert {"symbol": "AAA", "qty": 20, "side": "buy"} in broker.sent
+    assert {"symbol": "BBB", "qty": 10, "side": "sell"} in broker.sent
+    assert summary["orders_sent"] == 2
+    assert summary["n_failed"] == 0
+
+
 def test_alpaca_client_refuses_live_endpoint(tmp_path):
     env = tmp_path / ".env"
     env.write_text(

@@ -19,15 +19,22 @@ Discipline carried over from the backtest, stated explicitly:
   the residual is reported, not hidden), and capped per-name.
 - Paper endpoint only. The client refuses any base URL that does not
   contain 'paper'.
+- Order submission is paused unless ``QR_SUBMIT_ORDERS`` is explicitly
+  turned on (or the CLI is passed ``--submit-orders``). A paused cycle
+  still logs predictions; the summary says ``orders_status=paused`` so
+  later P&L does not treat the unsent target as a rebalance.
 """
 
 from __future__ import annotations
 
 import datetime as dt
 import json
+import logging
 import os
 import urllib.error
 import urllib.request
+
+logger = logging.getLogger(__name__)
 
 import numpy as np
 import pandas as pd
@@ -37,6 +44,64 @@ from quantlab.env import load_env
 from quantlab.models import make_model
 
 HORIZON = 21  # must match the research config being monitored
+
+# Operational switch for the nightly job. Unset, empty, or a falsy value
+# pauses broker submission. Only an explicit truthy value re-enables it.
+# Default-paused is deliberate: a missing env var must not start sending
+# orders again after this was turned off.
+SUBMIT_ORDERS_ENV = "QR_SUBMIT_ORDERS"
+_SUBMIT_TRUTHY = frozenset({"1", "true", "yes", "on"})
+_SUBMIT_FALSY = frozenset({"0", "false", "no", "off", ""})
+PAUSED_ORDERS_NOTE = (
+    "ORDERS PAUSED: broker submission skipped. Predictions and weights "
+    "were logged; no order was sent. Re-enable paper submission with "
+    "QR_SUBMIT_ORDERS=1 or --submit-orders."
+)
+
+
+def resolve_orders_status(submit: bool, env_value: str | None) -> str:
+    """Decide what this cycle does with the broker.
+
+    Returns ``"dry_run"``, ``"paused"``, or ``"submit"``.
+
+    ``submit=False`` is the explicit dry-run (local rehearsal). It is not
+    the operational pause: the record is marked ``dry_run`` so a later
+    reader can tell a one-off rehearsal from a halted live book.
+
+    ``submit=True`` is what the nightly job asks for. Submission then
+    happens only when ``QR_SUBMIT_ORDERS`` is an explicit truthy value.
+    Unset or falsy pauses. An unrecognized value raises rather than
+    guessing — a typo must not silently resume trading.
+    """
+    if not submit:
+        return "dry_run"
+    raw = "" if env_value is None else str(env_value).strip().lower()
+    if raw in _SUBMIT_TRUTHY:
+        return "submit"
+    if raw in _SUBMIT_FALSY:
+        return "paused"
+    raise ValueError(
+        f"{SUBMIT_ORDERS_ENV}={env_value!r} is not a recognized switch. "
+        "Use 1 to submit paper orders or 0 to keep them paused."
+    )
+
+
+def submission_inputs(dry_run: bool, submit_orders: bool) -> tuple[bool, str | None]:
+    """Map CLI flags onto ``run_daily(submit=...)`` plus an env override.
+
+    ``--submit-orders`` re-enables submission for this process even if
+    the environment says paused, by returning an override of ``"1"``.
+    ``--dry-run`` passes ``submit=False``, which wins over a truthy env
+    var. The two flags together are an error. With neither flag, the
+    env var is left alone and ``run_daily`` applies the default (paused).
+    """
+    if dry_run and submit_orders:
+        raise ValueError("pass only one of --dry-run and --submit-orders")
+    if dry_run:
+        return False, None
+    if submit_orders:
+        return True, "1"
+    return True, None
 
 
 # ---------------------------------------------------------------------------
@@ -164,6 +229,59 @@ def orders_from_weights(
     return orders
 
 
+def record_order_submission(
+    summary: dict,
+    status: str,
+    *,
+    broker_factory,
+    target_weights: pd.Series,
+    last_prices: pd.Series,
+) -> dict:
+    """Attach the order outcome to a cycle summary.
+
+    ``status="paused"`` and ``status="dry_run"`` never call
+    ``broker_factory``. The paused record is how later IC/P&L code tells
+    an unsent target book from a book the broker actually holds.
+    """
+    if status not in {"paused", "dry_run", "submit"}:
+        raise ValueError(f"unknown orders status: {status!r}")
+    out = dict(summary)
+    out["orders_status"] = status
+    out["orders_paused"] = status == "paused"
+    out["submitted"] = False
+    if status == "paused":
+        out["orders_note"] = PAUSED_ORDERS_NOTE
+        logger.warning(PAUSED_ORDERS_NOTE)
+        return out
+    if status == "dry_run":
+        out["orders_note"] = "dry-run: predictions logged, no orders sent"
+        return out
+
+    broker = broker_factory()
+    acct = broker.account()
+    equity = float(acct["equity"])
+    orders = orders_from_weights(
+        target_weights, broker.positions(), last_prices, equity
+    )
+    sent, failed = 0, []
+    for o in orders:
+        try:
+            broker.submit_order(o["symbol"], o["qty"], o["side"])
+            sent += 1
+        except urllib.error.HTTPError as e:  # e.g. not shortable today
+            failed.append({**o, "error": e.read().decode()[:120]})
+    out.update(
+        {
+            "submitted": True,
+            "equity": equity,
+            "orders_sent": sent,
+            "orders_failed": failed[:20],
+            "n_failed": len(failed),
+        }
+    )
+    return out
+
+
 # ---------------------------------------------------------------------------
 # Alpaca paper REST client (thin, urllib-only, refuses non-paper endpoints)
 # ---------------------------------------------------------------------------
@@ -231,6 +349,11 @@ def run_daily(
     raises instead of silently replacing the record (a revisable prediction
     log is worthless as evidence). ``allow_overwrite=True`` is the explicit,
     deliberate escape hatch for re-running a cycle that failed mid-way.
+
+    ``submit=True`` does not by itself send orders. Broker submission is
+    paused unless ``QR_SUBMIT_ORDERS`` is explicitly truthy (see
+    ``resolve_orders_status``). Paused cycles still write the prediction
+    and weight logs, and the summary is marked ``orders_status="paused"``.
     """
     from quantlab import universe as univ
     from quantlab.data import load_prices
@@ -261,25 +384,16 @@ def run_daily(
     predictions.rename_axis("ticker").to_csv(pred_path)
     target[target != 0].rename("weight").to_csv(record_path)
 
-    summary: dict = {"asof": asof, "n_names": int((target != 0).sum()), "submitted": False}
-    if submit:
-        broker = AlpacaPaper(env_path)
-        acct = broker.account()
-        equity = float(acct["equity"])
-        orders = orders_from_weights(
-            target, broker.positions(), prices.iloc[-1], equity
-        )
-        sent, failed = 0, []
-        for o in orders:
-            try:
-                broker.submit_order(o["symbol"], o["qty"], o["side"])
-                sent += 1
-            except urllib.error.HTTPError as e:  # e.g. not shortable today
-                failed.append({**o, "error": e.read().decode()[:120]})
-        summary.update(
-            {"submitted": True, "equity": equity, "orders_sent": sent,
-             "orders_failed": failed[:20], "n_failed": len(failed)}
-        )
+    # Default is paused. ``submit=True`` (the nightly job) still does not
+    # touch the broker unless QR_SUBMIT_ORDERS is explicitly truthy.
+    status = resolve_orders_status(submit, os.environ.get(SUBMIT_ORDERS_ENV))
+    summary = record_order_submission(
+        {"asof": asof, "n_names": int((target != 0).sum()), "submitted": False},
+        status,
+        broker_factory=lambda: AlpacaPaper(env_path),
+        target_weights=target,
+        last_prices=prices.iloc[-1],
+    )
 
     # Data-revision fingerprint: compare today's freshly downloaded history
     # against the previous cycle's snapshot of the SAME past (see

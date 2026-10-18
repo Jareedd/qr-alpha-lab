@@ -43,7 +43,18 @@ W, H = 820, 310
 STALE_AFTER_WEEKDAYS = 3
 
 
-def load_cycles() -> list[dict]:
+def _is_orders_paused(cycle: dict) -> bool:
+    return cycle.get("orders_status") == "paused" or cycle.get("orders_paused") is True
+
+
+def load_cycles(*, include_paused: bool = False) -> list[dict]:
+    """Summaries that belong on the scorecard.
+
+    Equity-bearing cycles draw the curve. ``include_paused=True`` also
+    returns orders-paused cycles, which have no new broker mark but prove
+    the nightly job ran. Staleness must use that wider set: a pause is
+    not an outage.
+    """
     cycles = []
     for path in sorted(glob.glob(os.path.join(LIVE_DIR, "summary_*.json"))):
         m = re.search(r"summary_(\d{4}-\d{2}-\d{2})\.json$", path)
@@ -55,7 +66,8 @@ def load_cycles() -> list[dict]:
         except (OSError, json.JSONDecodeError):
             continue
         d.setdefault("asof", m.group(1))
-        if isinstance(d.get("equity"), (int, float)):
+        has_equity = isinstance(d.get("equity"), (int, float))
+        if has_equity or (include_paused and _is_orders_paused(d)):
             cycles.append(d)
     return cycles
 
@@ -86,7 +98,19 @@ def staleness(cycles: list[dict], today: dt.date | None = None) -> tuple[int, st
     return weekdays_between(dt.date.fromisoformat(last), today), last
 
 
-def build_svg(cycles: list[dict], today: dt.date | None = None) -> str:
+def build_svg(
+    cycles: list[dict],
+    today: dt.date | None = None,
+    freshness_asof: str | None = None,
+    orders_paused: bool = False,
+) -> str:
+    """``cycles`` are equity marks and must all carry ``equity``.
+
+    ``freshness_asof`` is the last cycle that ran, including an
+    orders-paused cycle that did not query the broker. Staleness uses
+    it so a pause does not paint the STALLED banner. The curve itself
+    stays on the last broker mark.
+    """
     n = len(cycles)
     eq = [c["equity"] for c in cycles]
     dates = [c["asof"] for c in cycles]
@@ -125,12 +149,24 @@ def build_svg(cycles: list[dict], today: dt.date | None = None) -> str:
         ("CYCLES LOGGED", f"{n}", TXT),
         ("PAPER EQUITY", fmt_money(eq[-1]), TXT),
         ("SINCE START", f"{ret_pct:+.2f}%", ret_col),
-        ("BOOK / ORDERS", f'{last.get("n_names", "—")} names · {last.get("orders_sent", "—")} orders', TXT),
+        (
+            "BOOK / ORDERS",
+            "PAUSED · no broker orders"
+            if orders_paused
+            else f'{last.get("n_names", "—")} names · {last.get("orders_sent", "—")} orders',
+            GOLD if orders_paused else TXT,
+        ),
         ("ORDER FAILURES", f'{last.get("n_failed", 0)}', GRN if not last.get("n_failed") else RED),
         ("RETURN-CELL REVISIONS", "—" if n_rev is None else f"{n_rev}", TXT),
     ]
     # Freshness strip: stated on the artifact, not just in a workflow log.
-    stale_days, last_date = staleness(cycles, today)
+    # An orders-paused cycle has no new equity point, so the curve's last
+    # date is not the last time the job ran.
+    if freshness_asof:
+        stale_days = weekdays_between(dt.date.fromisoformat(freshness_asof), today or dt.date.today())
+        last_date = freshness_asof
+    else:
+        stale_days, last_date = staleness(cycles, today)
     hdr_col = DIM
     stale_svg = ""
     if stale_days > STALE_AFTER_WEEKDAYS:
@@ -156,7 +192,7 @@ def build_svg(cycles: list[dict], today: dt.date | None = None) -> str:
 <rect width="{W}" height="{H}" rx="12" fill="{BG}" stroke="{LINE}" stroke-width="2"/>
 <text x="24" y="30" font-family="{MONO}" font-size="15" font-weight="700" fill="{TXT}">LIVE PAPER-TRADING EXPERIMENT</text>
 <text x="24" y="48" font-family="{MONO}" font-size="10.5" fill="{DIM}">qr-alpha-lab · nightly via GitHub Actions · predictions logged BEFORE any order exists · shadow 12-1 momentum control arm</text>
-<text x="24" y="64" font-family="{MONO}" font-size="10.5" fill="{hdr_col}">cycle {n} · {dates[0]} → {dates[-1]} · Alpaca paper account (client refuses non-paper endpoints)</text>
+<text x="24" y="64" font-family="{MONO}" font-size="10.5" fill="{GOLD if orders_paused else hdr_col}">cycle {n} · {dates[0]} → {dates[-1]} · {"ORDERS PAUSED — curve held at last broker mark" if orders_paused else "Alpaca paper account (client refuses non-paper endpoints)"}</text>
 {stale_svg}
 <g>
   <rect x="{gx - 8}" y="{gy - 10}" width="{gw + 16}" height="{gh + 34}" rx="8" fill="{PANEL}" stroke="{LINE}"/>
@@ -184,11 +220,16 @@ def main(argv: list[str] | None = None) -> int:
     args = ap.parse_args(argv)
 
     cycles = load_cycles()
-    if not cycles:
+    logged = load_cycles(include_paused=True)
+    if not cycles or not logged:
         print("no live cycles found; nothing to render")
         return 1
 
-    stale_days, last_date = staleness(cycles)
+    latest = logged[-1]
+    paused_now = _is_orders_paused(latest)
+    stale_days, last_date = staleness(
+        [{"asof": latest["asof"]}],
+    )
     if args.check_stale:
         if stale_days > STALE_AFTER_WEEKDAYS:
             print(
@@ -200,7 +241,11 @@ def main(argv: list[str] | None = None) -> int:
         print(f"live cycles current: last {last_date} ({stale_days} weekdays ago)")
         return 0
 
-    svg = build_svg(cycles)
+    svg = build_svg(
+        cycles,
+        freshness_asof=latest["asof"],
+        orders_paused=paused_now,
+    )
     with open(OUT, "w") as fh:
         fh.write(svg)
     note = f" STALE: last cycle {last_date}, {stale_days} weekdays ago" if stale_days > STALE_AFTER_WEEKDAYS else ""
