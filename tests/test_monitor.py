@@ -100,6 +100,51 @@ def test_book_holds_until_next_logged_book():
     assert pnl.loc[idx[3]] == pytest.approx(-0.10)  # new book from day3
 
 
+def test_paused_cycle_does_not_replace_the_submitted_book():
+    # The weight file on a paused day is the unsent target. Marking it
+    # would book a rebalance the broker never did.
+    idx = pd.bdate_range("2026-01-05", periods=4)
+    prices = pd.DataFrame(
+        {"A": [100.0, 110.0, 121.0, 133.1], "B": [50.0, 50.0, 50.0, 50.0]},
+        index=idx,
+    )
+    books = {
+        idx[0]: pd.Series({"A": 1.0}),
+        idx[2]: pd.Series({"A": -1.0}),  # logged, but orders were paused
+    }
+    pnl = monitor.realized_book_returns(books, prices, hold_dates={idx[2]})
+    assert pnl.loc[idx[1]] == pytest.approx(0.10)
+    assert pnl.loc[idx[2]] == pytest.approx(0.10)
+    assert pnl.loc[idx[3]] == pytest.approx(0.10)  # old long book still held
+
+
+def test_orders_paused_dates_come_from_the_summary(tmp_path):
+    (tmp_path / "summary_2026-10-20.json").write_text(
+        '{"asof": "2026-10-20", "orders_status": "paused", "orders_paused": true}'
+    )
+    (tmp_path / "summary_2026-10-19.json").write_text(
+        '{"asof": "2026-10-19", "submitted": true, "equity": 1}'
+    )
+    paused = monitor.load_orders_paused_dates(str(tmp_path))
+    assert paused == {pd.Timestamp("2026-10-20")}
+
+
+def test_render_report_says_paused_weights_are_not_a_rebalance():
+    cont = monitor.cycle_continuity([pd.Timestamp("2026-06-10")], "2026-06-10")
+    md = monitor.render_report(
+        asof="2026-06-11",
+        continuity=cont,
+        n_weights_logged=1,
+        n_preds_logged=1,
+        comparison=None,
+        live_ic=pd.Series(dtype=float),
+        book_pnl=pd.Series({pd.Timestamp("2026-06-11"): 0.0}),
+        n_orders_paused=2,
+    )
+    assert "orders paused on 2" in md
+    assert "unsent target" in md
+
+
 def test_load_live_records_round_trip(tmp_path):
     w = pd.Series({"AAA": 0.5, "BBB": -0.5}, name="weight").rename_axis("ticker")
     p = pd.DataFrame(

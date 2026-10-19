@@ -67,6 +67,7 @@ def main() -> None:
     live_ic = pd.Series(dtype=float)
     baseline_ic = None
     book_pnl = pd.Series(dtype=float)
+    paused_dates = monitor.load_orders_paused_dates(args.live_dir)
     if not args.offline:
         from quantlab.data import load_prices
 
@@ -88,7 +89,9 @@ def main() -> None:
         live_ic = monitor.realized_live_ic(
             preds_by_date, prices, horizon=args.horizon
         )
-        book_pnl = monitor.realized_book_returns(weights_by_date, prices)
+        book_pnl = monitor.realized_book_returns(
+            weights_by_date, prices, hold_dates=paused_dates
+        )
         with open(args.backtest_metrics) as f:
             comparison = monitor.live_vs_backtest(
                 live_ic, json.load(f), horizon=args.horizon
@@ -120,6 +123,7 @@ def main() -> None:
         horizon=args.horizon,
         baseline_live_ic=baseline_ic,
         revisions=revisions,
+        n_orders_paused=len(paused_dates),
     )
     if not args.offline:
         stale = panel_staleness_days(max(weights_by_date), prices.index)
