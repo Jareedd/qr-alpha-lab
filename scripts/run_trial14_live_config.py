@@ -63,7 +63,7 @@ def _jsonable(obj):
 
 
 def _realized_beta(strat: pd.Series, market: pd.Series) -> float | None:
-    both = pd.concat([strat, market], axis=1, keys=["s", "m"]).dropna()
+    both = pd.concat([strat, market], axis=1, keys=["s", "m"], sort=True).dropna()
     if len(both) < 30:
         return None
     return float(beta_decomposition(both["s"], both["m"])["beta"])

@@ -951,7 +951,7 @@ uses **N = 13**.
   construction either way.
 
 ### T14: The deployed live book, backtested as deployed
-- Status: **PROPOSED** — frozen 2026-10-19, before any price in this trial was read. A graded run spends trial #14 and is scored at N=14. This is not H14. H14 is a different, still-unrun construction variant. T14 does not change anything deployed.
+- Status: **RUN (trial #14, 2026-10-19). Outcome: RETIRE** — all three kill legs fail (IC t_NW 0.78, net Sharpe −1.12, DSR ≈ 0 at N=14). Was PROPOSED, frozen in commit 331f6b8 before the download. This is not H14. H14 is a different, still-unrun construction variant. T14 changed nothing deployed.
 - Economic prior: trials #2–#7 already failed to find a defensible edge in these five price features on the point-in-time S&P 500. The live cycle was still deployed, as a monitor. It was deployed on a config the backtest never ran: prices from 2018-01-01 rather than 2009, a refit every session rather than every 126, a decile book rebuilt every session rather than held 21, and a fill at the next open rather than a close-to-close mark. The prior is that this cousin is also null, and that daily turnover makes it worse. The trial exists so the live record has a backtest of the book it actually is.
 - Point-in-time safety: no new feature and no new label. Features are `build_features` (past prices only). The fit that predicts date t trains on dates `<= t − 21` trading sessions, the same cutoff as `live_target_weights`, so the last training label consumes the close of t and nothing later. The fill is the next session's open: the weight chosen at the close of t earns the open-to-open return from t+1 to t+2.
 - Exact config (FROZEN, the graded book):
