@@ -17,8 +17,10 @@ Discipline carried over from the backtest, stated explicitly:
   effects.
 - Orders are integer-share, dollar-neutral-ish (rounding breaks exactness;
   the residual is reported, not hidden), and capped per-name.
-- Paper endpoint only. The client refuses any base URL that does not
-  contain 'paper'.
+- Paper endpoint only. The client accepts a base URL only when it is
+  https and its hostname is exactly paper-api.alpaca.markets (optional
+  /v2 path). A substring match is not a guard: ``?paper`` and
+  ``paper.evil.example`` both contain the letters and both are refused.
 """
 
 from __future__ import annotations
@@ -29,6 +31,7 @@ import json
 import os
 import re
 import urllib.error
+import urllib.parse
 import urllib.request
 from zoneinfo import ZoneInfo
 
@@ -514,15 +517,55 @@ def orders_from_weights(
 # Alpaca paper REST client (thin, urllib-only, refuses non-paper endpoints)
 # ---------------------------------------------------------------------------
 
+# Alpaca's paper trading API is this host and no other. The live host is
+# api.alpaca.markets; a guard that searches the raw string for "paper"
+# accepts that host with ``?paper`` bolted on, and any lookalike whose
+# name merely contains the substring.
+PAPER_API_HOST = "paper-api.alpaca.markets"
+_PAPER_API_ORIGIN = f"https://{PAPER_API_HOST}"
+
+
+def paper_base_url(raw: str) -> str:
+    """Return the canonical paper origin, or raise.
+
+    Fail closed. The URL must be ``https`` and its parsed hostname must be
+    exactly ``paper-api.alpaca.markets``. An optional ``/v2`` path is
+    allowed because ``_req`` appends ``/v2`` itself; the stored base is
+    always the canonical origin, so a query, fragment, userinfo, explicit
+    port, or any other path cannot change where orders go.
+
+    Assumption: Alpaca serves paper trading only at that hostname over
+    HTTPS. Anything else — including the live host — is refused.
+    """
+    try:
+        parsed = urllib.parse.urlparse(raw.strip())
+        host = parsed.hostname
+        port = parsed.port
+        has_userinfo = parsed.username is not None or parsed.password is not None
+    except ValueError:
+        # Malformed host or port. urlparse is permissive; the accessors are not.
+        raise RuntimeError(f"refusing non-paper endpoint: {raw}") from None
+    path = parsed.path.rstrip("/")
+    if (
+        parsed.scheme != "https"
+        or host != PAPER_API_HOST
+        or port is not None
+        or has_userinfo
+        or path not in ("", "/v2")
+        or parsed.query
+        or parsed.fragment
+    ):
+        raise RuntimeError(f"refusing non-paper endpoint: {raw}")
+    return _PAPER_API_ORIGIN
+
+
 class AlpacaPaper:
     def __init__(self, env_path: str = ".env"):
         load_env(env_path)
         self.key = os.environ.get("ALPACA_API_KEY_ID", "")
         self.secret = os.environ.get("ALPACA_API_SECRET_KEY", "")
-        base = os.environ.get("ALPACA_BASE_URL", "https://paper-api.alpaca.markets")
-        self.base = base.rstrip("/").removesuffix("/v2")
-        if "paper" not in self.base:
-            raise RuntimeError(f"refusing non-paper endpoint: {self.base}")
+        base = os.environ.get("ALPACA_BASE_URL", _PAPER_API_ORIGIN)
+        self.base = paper_base_url(base)
         if not self.key or not self.secret:
             raise RuntimeError("Alpaca credentials missing (see .env.example)")
 
