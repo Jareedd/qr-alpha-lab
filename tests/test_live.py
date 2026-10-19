@@ -214,20 +214,75 @@ def test_submit_status_uses_the_broker_and_marks_submitted():
     assert summary["n_failed"] == 0
 
 
-def test_alpaca_client_refuses_live_endpoint(tmp_path):
+def _alpaca_env(tmp_path, monkeypatch, base: str | None) -> str:
+    """A throwaway .env with dummy paper keys and, optionally, a base URL.
+
+    ``load_env`` will not override variables already in the process, so the
+    three Alpaca keys are cleared first. No network: constructing the client
+    is the whole test.
+    """
+    for key in ("ALPACA_BASE_URL", "ALPACA_API_KEY_ID", "ALPACA_API_SECRET_KEY"):
+        monkeypatch.delenv(key, raising=False)
+    lines = ["ALPACA_API_KEY_ID=k", "ALPACA_API_SECRET_KEY=s"]
+    if base is not None:
+        lines.append(f"ALPACA_BASE_URL={base}")
     env = tmp_path / ".env"
-    env.write_text(
-        "ALPACA_API_KEY_ID=k\nALPACA_API_SECRET_KEY=s\n"
-        "ALPACA_BASE_URL=https://api.alpaca.markets\n"
-    )
-    os.environ.pop("ALPACA_BASE_URL", None)
-    saved_key = os.environ.pop("ALPACA_API_KEY_ID", None)
-    saved_sec = os.environ.pop("ALPACA_API_SECRET_KEY", None)
-    try:
-        with pytest.raises(RuntimeError, match="refusing non-paper"):
-            live.AlpacaPaper(str(env))
-    finally:
-        if saved_key:
-            os.environ["ALPACA_API_KEY_ID"] = saved_key
-        if saved_sec:
-            os.environ["ALPACA_API_SECRET_KEY"] = saved_sec
+    env.write_text("\n".join(lines) + "\n")
+    return str(env)
+
+
+def test_alpaca_client_refuses_live_endpoint(tmp_path, monkeypatch):
+    env = _alpaca_env(tmp_path, monkeypatch, "https://api.alpaca.markets")
+    with pytest.raises(RuntimeError, match="refusing non-paper"):
+        live.AlpacaPaper(env)
+
+
+@pytest.mark.parametrize(
+    "base",
+    [
+        # Substring bypasses: "paper" appears, the host is not the paper API.
+        "https://api.alpaca.markets/?paper",
+        "https://api.alpaca.markets?paper",
+        "https://paper.evil.example",
+        "https://paper-api.alpaca.markets.evil.example",
+        "https://paper-api.alpaca.markets.",  # trailing-dot host is a different name
+        "https://evil.example/paper-api.alpaca.markets",
+        "https://paper-api.alpaca.markets\\@evil.com",
+        "https://api.alpaca.markets/paper",
+        # The live host, with and without a paper-looking path.
+        "https://api.alpaca.markets",
+        "https://api.alpaca.markets/v2",
+        # Right host, wrong scheme. The old substring check accepted this.
+        "http://paper-api.alpaca.markets",
+        "http://paper-api.alpaca.markets/v2",
+        # Right host, but not a bare origin: userinfo, port, query, fragment,
+        # or a path other than the optional /v2 would all be requested as-is.
+        "https://user:pass@paper-api.alpaca.markets",
+        "https://paper-api.alpaca.markets:8443",
+        "https://paper-api.alpaca.markets?paper=1",
+        "https://paper-api.alpaca.markets#paper",
+        "https://paper-api.alpaca.markets/v2/account",
+    ],
+)
+def test_alpaca_client_rejects_non_paper_urls(tmp_path, monkeypatch, base):
+    env = _alpaca_env(tmp_path, monkeypatch, base)
+    with pytest.raises(RuntimeError, match="refusing non-paper"):
+        live.AlpacaPaper(env)
+
+
+@pytest.mark.parametrize(
+    "base",
+    [
+        None,  # unset -> the built-in default
+        "https://paper-api.alpaca.markets",
+        "https://paper-api.alpaca.markets/",
+        "https://paper-api.alpaca.markets/v2",
+        "https://paper-api.alpaca.markets/v2/",
+    ],
+)
+def test_alpaca_client_accepts_exact_paper_host(tmp_path, monkeypatch, base):
+    # Construction must succeed and must store the canonical origin.
+    # ``_req`` appends /v2 itself; a stored /v2 would double-prefix.
+    env = _alpaca_env(tmp_path, monkeypatch, base)
+    client = live.AlpacaPaper(env)
+    assert client.base == "https://paper-api.alpaca.markets"
