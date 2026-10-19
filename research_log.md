@@ -129,6 +129,9 @@ are future work with their own pre-registered trials.
 
 ## Notes
 
+- 2026-10-19: **Trial #14 PRE-REGISTERED, not yet run. N stays 13 until the result is logged.**
+  Registration `T14` in `writeup/preregistered_hypotheses.md` (not H14, which is a different unrun construction variant). The deployed live config — prices from 2018-01-01, ridge refit every session, decile book rebuilt every session, next-open fills, the same five features, point-in-time S&P 500 universe, and 10 bps/side — was never the 2009 / 126-session refit / 21-session hold / close-to-close backtest. This evaluation counts. DSR will be computed at **N=14** (conservative accounting: not a free reproduction of trial #5). Kill, frozen before any price in this trial was read: retire unless OOS rank-IC Newey-West t ≥ 3.48 AND net Sharpe > 0 AND DSR ≥ 0.95. Ex-ante MDE **1.233 net annual Sharpe** at design n_obs 1,900, N=14, symmetric returns. The 21-session rebalance and the integer-share beta (declared $1M, not a broker read) are diagnostics and cannot flip a retire into a keep. No live or paper-trading entrypoint is part of this trial.
+
 - 2026-10-15: **Paper-endpoint guard fail-closed (infra, ZERO trials, N stays 13).**
   `AlpacaPaper` used to accept any base URL containing `"paper"`. It now
   accepts only `https` with hostname exactly `paper-api.alpaca.markets`

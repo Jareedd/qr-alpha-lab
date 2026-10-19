@@ -51,6 +51,11 @@ from quantlab.models import make_model
 
 HORIZON = 21  # must match the research config being monitored
 
+# Rows of (date, ticker) with a fully realized label required before a live
+# fit. The offline replay imports this so the two cannot drift. A thinner
+# panel is not the cross-section this book was specified on.
+MIN_TRAIN_ROWS = 10_000
+
 # Longest feature lookback (mom_12_1, pct_52w_high). A name with fewer
 # finite bars before the as-of date cannot have those features; that is
 # warm-up, not a missing close.
@@ -496,7 +501,7 @@ def live_target_weights(
     today = prices.index[-1]
     cutoff = prices.index[-(horizon + 1)]  # last date with a complete label
     train = panel[panel.index.get_level_values("date") <= cutoff]
-    if len(train) < 10_000:
+    if len(train) < MIN_TRAIN_ROWS:
         raise RuntimeError(f"training panel too small ({len(train)} rows)")
 
     feature_cols = [c for c in train.columns if c != "label"]

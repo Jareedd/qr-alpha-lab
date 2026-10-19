@@ -950,6 +950,30 @@ uses **N = 13**.
   owner decision registered at that time. The live-IC arm is unaffected by
   construction either way.
 
+### T14: The deployed live book, backtested as deployed
+- Status: **PROPOSED** — frozen 2026-10-19, before any price in this trial was read. A graded run spends trial #14 and is scored at N=14. This is not H14. H14 is a different, still-unrun construction variant. T14 does not change anything deployed.
+- Economic prior: trials #2–#7 already failed to find a defensible edge in these five price features on the point-in-time S&P 500. The live cycle was still deployed, as a monitor. It was deployed on a config the backtest never ran: prices from 2018-01-01 rather than 2009, a refit every session rather than every 126, a decile book rebuilt every session rather than held 21, and a fill at the next open rather than a close-to-close mark. The prior is that this cousin is also null, and that daily turnover makes it worse. The trial exists so the live record has a backtest of the book it actually is.
+- Point-in-time safety: no new feature and no new label. Features are `build_features` (past prices only). The fit that predicts date t trains on dates `<= t − 21` trading sessions, the same cutoff as `live_target_weights`, so the last training label consumes the close of t and nothing later. The fill is the next session's open: the weight chosen at the close of t earns the open-to-open return from t+1 to t+2.
+- Exact config (FROZEN, the graded book):
+  - Universe: point-in-time S&P 500, membership intervals from 2010-01-01, adjusted prices from `LIVE_PRICE_START` = 2018-01-01. Same member mask and as-of-today sector map `live.py` uses.
+  - Features: mom_12_1, mom_6_1, rev_1m, vol_3m, pct_52w_high, cross-sectionally z-scored on members.
+  - Label: residual 21-day forward return (past-only rolling beta), the live label. IC is the rank IC of `pred_raw` (pre-demean) against that label, Newey-West lags = 21.
+  - Model: ridge, alpha 10, refit every session, expanding window, minimum 10,000 labeled rows (the live gate).
+  - Book: top/bottom decile, equal weight, sector-demeaned scores, weights projected to zero ex-ante beta against the equal-weight member market, rebuilt every session.
+  - Fills: next open. Costs: 10 bps/side linear, the pipeline cost. `live.py` submits uncosted paper orders and does not encode a different number.
+  - DSR at N=14. Counting this as a new trial is the conservative choice: it is not a free reproduction of trial #5.
+- Diagnostics, declared now, with no vote on the verdict:
+  - 21-session rebalance of the same scores, same fills, same 10 bps. Turnover, cost drag, gross Sharpe, net Sharpe, next to the daily book. This arm cannot flip a retire into a keep.
+  - Integer-share rounding at a declared $1,000,000 notional (the paper-account size recorded on 2026-06-10; not read from the broker), 5% per-name cap, `int(w · equity / price)` toward zero. Report ex-ante beta before and after (mean, mean absolute, p95 absolute), the dollar-neutrality break, the L1 weight distortion, and the realized beta of the gross next-open returns versus the member-mean open-to-open market. SPY beta is descriptive only.
+  - Law-5 baselines (12-1 momentum decile and equal-weight), same next-open fills and same 10 bps, reported and not a fourth kill.
+- Minimum detectable effect (MDE), stated before the download. From `graduation_hurdle.required_ann_sharpe`. Weekday count 2018-01-02 through 2026-10-16 is 2,294. Subtract 252 sessions of feature warmup, 23 sessions to clear the 10,000-row gate at a 450-name cross-section, and the 21-session embargo: 1,998 design days. NYSE holidays shorten it. Quoted hurdle uses **1,900** days, N=14, symmetric returns (skew 0, raw kurtosis 3): **MDE = 1.233 net annual Sharpe** (DSR = 0.95). The deflation benchmark at that sample is about 0.63 net annual Sharpe. Mild negative skew (−0.5, raw kurtosis 4) moves the MDE only to about 1.25. The IC leg (t ≥ 3.48) is a separate, stricter bar than this Sharpe hurdle and is not implied by it. The realized n_obs will be printed beside the result and will not move these thresholds.
+- Kill criteria (any one fails → **RETIRE**; all three pass → **KEEP**):
+  1. OOS IC Newey-West t < 3.48 → retire.
+  2. Net Sharpe ≤ 0 → retire.
+  3. DSR < 0.95 at N=14 → retire.
+  KEEP means this backtest cleared the pre-registered bar. It does not by itself meet `graduation_criteria.md` (live cycles, e-value, impact). RETIRE means this configuration is not evidence of an edge and should not be cited as one. No second cadence, no sign flip, no feature drop after seeing the result.
+- Failure interpretation: a retire is the expected outcome if trials #2–#7 were about the features and not about the 126-day refit. The useful number is then the cost of rebuilding the book every day versus holding it 21 sessions, and how much integer-share rounding moves ex-ante beta — both of which the live vol diagnosis could only estimate from 38 cycles.
+
 ---
 
 Run log: H2 RUN as trial #8 (2026-06-13, criteria not met). H8 RUN as trial #9
