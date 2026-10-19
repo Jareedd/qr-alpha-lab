@@ -33,7 +33,7 @@ jobs:
       # Predictions, the price download, revision fingerprints and the
       # scorecard keep running. Re-enable paper submission by setting
       # QR_SUBMIT_ORDERS to 1. Unset is also paused. The Alpaca client
-      # still refuses any endpoint that is not paper.
+      # still accepts only https://paper-api.alpaca.markets.
       - name: Daily paper trade (orders paused; skips if secrets unset)
         env:
           ALPACA_API_KEY_ID: ${{ secrets.ALPACA_API_KEY_ID }}
@@ -48,9 +48,13 @@ jobs:
       # Everything below runs with `if: always()`. Learned the expensive way:
       # from 2026-08-11 the trade step died on an upstream Wikipedia layout
       # change, and because a failed step ends the job, it took the monitoring
-      # report AND the H7 borrow snapshot down with it for 25 weekdays -- even
-      # though collect_borrow.py needs neither the universe scrape nor the
-      # broker (it reads the last committed predictions log). Independent
+      # report AND the H7 borrow snapshot down with it. No weights file exists
+      # for 2026-08-11 through 2026-09-25 (34 weekdays, 33 sessions; first
+      # cycle back 2026-09-28). Borrow files resume 2026-09-15, still pointed
+      # at the 2026-08-10 universe, so the trade step stayed down after the
+      # collectors came back, even though collect_borrow.py needs neither the
+      # universe scrape nor the broker (it reads the last committed
+      # predictions log). Independent
       # collectors must fail independently; an unbackfillable dataset cannot
       # afford to share a failure domain with the trading path.
       - name: Refresh monitoring report (non-fatal -- trading already logged)

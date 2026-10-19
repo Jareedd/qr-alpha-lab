@@ -366,6 +366,35 @@ def test_volumes_take_the_same_hardened_path(fake_yf, tmp_path):
                           cache_dir=str(tmp_path))
 
 
+def test_fresh_cache_missing_the_required_bar_is_refetched(fake_yf, tmp_path):
+    """mtime < 1 day is not 'this file contains the session we need'.
+
+    The live job can restore yesterday's parquet into today's directory.
+    A required last bar after the cached panel must refetch even when the
+    file was written seconds ago.
+    """
+    fake = fake_yf(_all_good)
+    data.load_prices(["AAPL"], start="2024-01-01", end=None, cache_dir=str(tmp_path))
+    cached_last = str(DATES[-1].date())
+    hit = data.load_prices(
+        ["AAPL"], start="2024-01-01", end=None, cache_dir=str(tmp_path),
+        min_last_bar=cached_last,
+    )
+    assert hit.attrs["download_report"].source == "cache"
+    assert len(fake.calls) == 1
+
+    extra = DATES.append(pd.DatetimeIndex([DATES[-1] + pd.Timedelta(days=1)]))
+    fake._responder = lambda chunk, start, end: _multi_frame(chunk, extra)
+    need = str((DATES[-1] + pd.Timedelta(days=1)).date())
+    again = data.load_prices(
+        ["AAPL"], start="2024-01-01", end=None, cache_dir=str(tmp_path),
+        min_last_bar=need,
+    )
+    assert again.attrs["download_report"].source == "download"
+    assert len(fake.calls) == 2
+    assert again.index.max() > DATES[-1]
+
+
 def test_download_report_serializes_for_failure_reporting(fake_yf, tmp_path):
     fake_yf(lambda chunk, start, end: _multi_frame([t for t in chunk if t != "DEAD"], DATES))
     px = data.load_prices(["AAPL", "DEAD"], start="2024-01-01", end="2024-02-01",

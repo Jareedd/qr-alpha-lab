@@ -1,7 +1,9 @@
 """The scorecard must report its own staleness (found 2026-09-15).
 
-The nightly trading job failed every weekday from 2026-08-11 to 2026-09-15
-(25 cycles), and nothing in the repo said so: the scorecard workflow kept
+Checked on 2026-09-15 the nightly job had already failed every weekday from
+2026-08-11, and nothing in the repo said so. The weights gap actually runs
+through 2026-09-25 (first cycle back 2026-09-28); 2026-09-15 is mid-outage,
+which is when this alarm was added. The scorecard workflow kept
 exiting 0, the committed SVG kept rendering, and the artifact a reader sees
 still claimed "nightly". A monitoring artifact that cannot go red is
 decoration. This pins the arithmetic and the alarm.
@@ -35,7 +37,8 @@ def test_weekdays_between_skips_the_weekend():
 
 
 def test_the_observed_outage_is_measured():
-    # The real one: last cycle 2026-08-10, checked 2026-09-15.
+    # Alarm as it would have read on the day it was added (2026-09-15),
+    # last cycle 2026-08-10. The outage continued through 2026-09-25.
     days, last = staleness(_cycles("2026-08-10"), today=dt.date(2026, 9, 15))
     assert last == "2026-08-10"
     assert days == 26

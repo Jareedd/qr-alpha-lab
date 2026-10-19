@@ -14,7 +14,7 @@ import pandas as pd
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "scripts"))
 
-from live_report import panel_staleness_days  # noqa: E402
+from live_report import panel_staleness_days, report_cache_dir  # noqa: E402
 
 
 def test_fresh_panel_is_not_stale():
@@ -32,3 +32,15 @@ def test_june_frozen_panel_flags_the_observed_bug():
 
 def test_empty_panel_is_maximally_stale():
     assert panel_staleness_days(pd.Timestamp("2026-08-05"), pd.Index([])) >= 10**5
+
+
+def test_report_cache_is_not_the_live_cycle_directory():
+    # 00:30 UTC Tuesday is still Monday evening in New York. The report
+    # must not land in data_cache/live_* either way: sharing that folder
+    # is how the revision monitor started comparing the wrong panel.
+    import datetime as dt
+
+    now = dt.datetime(2026, 10, 20, 0, 30, tzinfo=dt.timezone.utc)
+    path = report_cache_dir(now)
+    assert path.endswith("report_2026-10-19")
+    assert "live_" not in path.replace("report_", "")

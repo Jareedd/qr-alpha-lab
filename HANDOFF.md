@@ -42,19 +42,33 @@ trial #1 was solved on FREE data (SEC name-crosswalk to 94% dead-name
 fundamentals + Tiingo delisting-inclusive prices), so "blocked on CRSP" is no
 longer the project's ceiling.
 
-**The live experiment was DOWN 2026-08-11 → 2026-09-15 and is now fixed.** The
-nightly job crashed every weekday for five weeks at `universe.fetch_sp500_tables`
-— Wikipedia moved the component-changes table to its own article and gave it an
-extra column, and the parser addressed tables by position with a fixed column
-count. **26 cycles lost, unbackfillable**, which pushes the H5/H7 stage-2 unlock
-(≥60 cycles; 38 collected) from 2026-09-09 to ~2026-10-15. Because a failed step
-ends a GitHub Actions job, the failure also took down the H7 borrow snapshot,
-which needs neither the scrape nor the broker. Fixed 2026-09-15: name-based
-table selection with a two-page fallback and guards that REFUSE a half-parsed
-scrape (falling back to today's members would be silent survivorship bias);
-`if: always()` on the collectors and the commit step; and a freshness alarm on
-the scorecard, which had been exiting 0 nightly throughout the outage. See the
-2026-09-15 `research_log.md` row.
+**The live experiment logged no cycle from 2026-08-11 through 2026-09-25.**
+The last weights file before the gap is 2026-08-10; the first one back is
+2026-09-28. That is 34 weekdays and 33 NYSE sessions (Labor Day 2026-09-07
+is inside the gap). The 2026-09-15 note below, and the research-log row of
+that date, say "26 cycles" ending 2026-09-15. That count is only the
+weekdays 2026-08-11 through 2026-09-15 (25 sessions). It was written on
+2026-09-15, while the trade step was still failing: borrow files for
+2026-09-15 through 2026-09-25 exist and still carry `universe_asof`
+2026-08-10. There is no borrow file for 2026-08-11 through 2026-09-14.
+Isolated misses with no weights file: 2026-06-16 and 2026-08-07 (nothing
+else either); 2026-09-30, 2026-10-02, 2026-10-13 and 2026-10-16 (borrow
+file present, so the collector ran and the trade step did not). Holidays
+with no weights file, not misses: 2026-06-19, 2026-07-03, 2026-09-07.
+
+The nightly job crashed at `universe.fetch_sp500_tables` — Wikipedia moved
+the component-changes table to its own article and gave it an extra column,
+and the parser addressed tables by position with a fixed column count.
+Those missing cycles are unbackfillable. Because a failed step ends a
+GitHub Actions job, the first part of the failure also took down the H7
+borrow snapshot, which needs neither the scrape nor the broker. Fixed
+2026-09-15: name-based table selection with a two-page fallback and guards
+that REFUSE a half-parsed scrape (falling back to today's members would be
+silent survivorship bias); `if: always()` on the collectors and the commit
+step; and a freshness alarm on the scorecard, which had been exiting 0
+nightly throughout the outage. The trade step did not actually resume
+until 2026-09-28. See the 2026-09-15 `research_log.md` row, and the
+2026-10-18 correction.
 
 **Operational state to verify at session start:** is a cycle logged for the
 last trading day? `python scripts/live_scorecard.py --check-stale` answers in
