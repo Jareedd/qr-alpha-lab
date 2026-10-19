@@ -29,10 +29,16 @@ jobs:
           path: data_cache
           key: live-snapshots-${{ github.run_id }}  # never hits; restore-keys does
           restore-keys: live-snapshots-
-      - name: Daily paper trade (skips gracefully if secrets unset)
+      # Orders are paused (2026-10-18) while the data plumbing is fixed.
+      # Predictions, the price download, revision fingerprints and the
+      # scorecard keep running. Re-enable paper submission by setting
+      # QR_SUBMIT_ORDERS to 1. Unset is also paused. The Alpaca client
+      # still accepts only https://paper-api.alpaca.markets.
+      - name: Daily paper trade (orders paused; skips if secrets unset)
         env:
           ALPACA_API_KEY_ID: ${{ secrets.ALPACA_API_KEY_ID }}
           ALPACA_API_SECRET_KEY: ${{ secrets.ALPACA_API_SECRET_KEY }}
+          QR_SUBMIT_ORDERS: "0"
         run: |
           if [ -z "$ALPACA_API_KEY_ID" ]; then
             echo "Alpaca secrets not configured -> skipping (see README Phase 6)"

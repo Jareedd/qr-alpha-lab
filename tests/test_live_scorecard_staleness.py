@@ -73,6 +73,38 @@ def test_svg_has_no_banner_when_current():
     assert "STALLED" not in svg
 
 
+def test_orders_paused_cycle_is_not_a_stall_and_is_labeled():
+    # Equity curve ends 10-15 (last broker mark). The job kept running
+    # on 10-19 with orders paused. That is fresh, and it must say so.
+    svg = build_svg(
+        _cycles("2026-10-14", "2026-10-15"),
+        today=dt.date(2026, 10, 19),
+        freshness_asof="2026-10-19",
+        orders_paused=True,
+    )
+    assert "STALLED" not in svg
+    assert "ORDERS PAUSED" in svg
+    assert "PAUSED · no broker orders" in svg
+
+
+def test_paused_summary_without_equity_counts_for_freshness(tmp_path, monkeypatch):
+    import live_scorecard as sc
+
+    monkeypatch.setattr(sc, "LIVE_DIR", str(tmp_path))
+    (tmp_path / "summary_2026-10-15.json").write_text(
+        '{"asof": "2026-10-15", "equity": 950000, "orders_status": "submitted"}'
+    )
+    (tmp_path / "summary_2026-10-19.json").write_text(
+        '{"asof": "2026-10-19", "orders_status": "paused", "orders_paused": true, "n_names": 98}'
+    )
+    curve = sc.load_cycles()
+    logged = sc.load_cycles(include_paused=True)
+    assert [c["asof"] for c in curve] == ["2026-10-15"]
+    assert [c["asof"] for c in logged] == ["2026-10-15", "2026-10-19"]
+    days, last = sc.staleness([{"asof": logged[-1]["asof"]}], today=dt.date(2026, 10, 19))
+    assert last == "2026-10-19" and days == 0
+
+
 @pytest.mark.parametrize("stale", [True, False])
 def test_svg_geometry_is_identical_either_way(stale):
     # The banner's space is reserved unconditionally, so a stalled card cannot
