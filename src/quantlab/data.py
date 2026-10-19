@@ -500,6 +500,35 @@ def load_prices(
     )
 
 
+def load_opens(
+    tickers: list[str] | None = None,
+    start: str = "2010-01-01",
+    end: str | None = None,
+    cache_dir: str = "data_cache",
+    min_coverage: float = 0.9,
+    chunk_size: int = 100,
+    *,
+    min_symbols: int = 1,
+    refresh: bool = False,
+    max_cache_age_days: float = LATEST_CACHE_MAX_AGE_DAYS,
+    min_last_bar=None,
+) -> pd.DataFrame:
+    """Adjusted opens, same vendor, adjustment, and cache rules as ``load_prices``.
+
+    yfinance ``auto_adjust=True`` scales Open and Close by the same factor, so
+    an open-to-open return is a total return in the same units as the adjusted
+    close the features use. The adjustment is still retroactive (a dividend
+    revises the whole history) — the known free-data limitation, not a fix.
+    """
+    tickers = DEFAULT_UNIVERSE if tickers is None else tickers
+    return _download_field(
+        tickers, "Open", start, end, cache_dir, min_coverage, chunk_size,
+        min_symbols=min_symbols, refresh=refresh,
+        max_cache_age_days=max_cache_age_days,
+        min_last_bar=min_last_bar,
+    )
+
+
 def load_volumes(
     tickers: list[str] | None = None,
     start: str = "2010-01-01",

@@ -1,0 +1,15 @@
+{
+  "synthetic": true,
+  "mode": "planted",
+  "seed": 7,
+  "opens": "previous close (synthetic; not a market open)",
+  "mean_rank_ic": 0.1382021908972965,
+  "ic_t_nw": 12.48437668904531,
+  "sharpe_net_zero_cost": 1.7868214440744157,
+  "dsr_zero_cost": 0.9999999943815086,
+  "sharpe_net_10bps": 1.2559846668987622,
+  "dsr_10bps": 0.9999698178207013,
+  "annual_turnover_10bps": 31.745455940955846,
+  "n_trials_for_dsr": 1,
+  "n_predictions": 2561
+}
