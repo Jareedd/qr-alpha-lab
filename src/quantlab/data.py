@@ -14,8 +14,10 @@ is reported in ``df.attrs["download_report"]`` -- never swallowed.
   file written before ``max_cache_age_days`` ago is refetched instead of
   served forever. (This bug froze the live monitor's price panel for six
   weeks -- see research_log.md 2026-08-06.)
-- Duplicate timestamps  -> deduplicated (last wins) and counted, per chunk,
-  BEFORE the concat that would otherwise raise on a non-unique index.
+- Duplicate timestamps  -> collapsed to one row per timestamp and counted,
+  per chunk, BEFORE the concat that would otherwise raise on a
+  non-unique index. The last finite value in each column wins, so a
+  later NaN placeholder cannot erase the close.
 - Invalid inputs        -> ``ValueError`` before any network or disk access.
 - Interrupted rerun     -> the cache is written atomically (temp + rename) and
   an unreadable cache file is refetched, so a rerun is idempotent rather than
@@ -30,6 +32,7 @@ import os
 import time
 from dataclasses import dataclass, field as _dc_field
 
+import numpy as np
 import pandas as pd
 
 logger = logging.getLogger(__name__)
@@ -172,13 +175,30 @@ def _validate_request(
     return cleaned, start_ts, end_ts
 
 
+def _collapse_duplicate_timestamps(part: pd.DataFrame) -> pd.DataFrame:
+    """One row per timestamp: the last finite value in each column.
+
+    ``groupby.last`` skips NA, which is the rule we want once non-finite
+    values have been masked. A later placeholder (NaN close, sometimes with
+    a volume on a field we do not keep) must not erase the official print:
+    the live cycle scores ``prices.index[-1]``, and one empty session row
+    is "0 tradable names". A later finite value still wins — that copy is
+    the vendor's corrected re-send. A column that is non-finite in every
+    copy stays missing.
+    """
+    values = part.to_numpy(dtype=np.float64, copy=True)
+    values[~np.isfinite(values)] = np.nan
+    cleaned = pd.DataFrame(values, index=part.index, columns=part.columns)
+    return cleaned.groupby(level=0, sort=False).last()
+
+
 def _normalize_frame(part: pd.DataFrame) -> tuple[pd.DataFrame, int]:
     """Sort, de-duplicate and tz-normalize one chunk's index.
 
     Duplicate timestamps must die here, not after the concat: ``pd.concat``
     along axis=1 raises on a non-unique index, so a single duplicated vendor
-    row would take down an otherwise healthy 500-name download. Last wins --
-    when a vendor re-sends a bar, the later copy is the corrected one.
+    row would take down an otherwise healthy 500-name download. See
+    ``_collapse_duplicate_timestamps`` for which copy survives.
     """
     idx = pd.DatetimeIndex(pd.to_datetime(part.index, errors="coerce"))
     if idx.tz is not None:
@@ -188,13 +208,13 @@ def _normalize_frame(part: pd.DataFrame) -> tuple[pd.DataFrame, int]:
     # the wire and the same frame read back from parquet compare equal.
     part.index = pd.DatetimeIndex(idx.normalize().values)
     part = part[part.index.notna()]
-    # Stable sort: with a duplicated timestamp, "last wins" has to mean "the
-    # copy the vendor sent last", and quicksort (pandas' default) does not
+    # Stable sort: with a duplicated timestamp, "last" has to mean "the copy
+    # the vendor sent last", and quicksort (pandas' default) does not
     # preserve that order among ties.
     part = part.sort_index(kind="stable")
     dupes = int(part.index.duplicated(keep="last").sum())
     if dupes:
-        part = part[~part.index.duplicated(keep="last")]
+        part = _collapse_duplicate_timestamps(part)
     return part, dupes
 
 

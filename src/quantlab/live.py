@@ -326,6 +326,50 @@ def _dropped_detail(report: dict, decision: dict) -> str:
     return ". ".join(parts)
 
 
+def _bar_calendar_dates(index: pd.Index) -> pd.DatetimeIndex:
+    """Calendar date of each bar.
+
+    A tz-aware stamp is read in America/New_York. Naive stamps are the
+    loader's dates: ``_normalize_frame`` already converted them to UTC and
+    took the calendar day, so a late-evening Eastern print can already sit
+    on the next UTC date. That next date is what the clip below removes.
+    """
+    dates = pd.DatetimeIndex(pd.to_datetime(index, errors="coerce"))
+    if dates.tz is not None:
+        dates = dates.tz_convert("America/New_York").tz_localize(None)
+    return pd.DatetimeIndex(dates.normalize())
+
+
+def clip_prices_to_session(
+    prices: pd.DataFrame, session: dt.date
+) -> tuple[pd.DataFrame, int]:
+    """Drop bars dated strictly after the New York session.
+
+    ``live_target_weights`` scores ``prices.index[-1]``. A vendor row dated
+    the next UTC morning, or the weekend, with fewer than two member closes
+    becomes that row: history still trains (the label cutoff is earlier),
+    and the as-of cross-section z-scores to nothing — ``only 0 tradable
+    names``. One finite name is not enough: cross-sectional ``std`` with
+    ``ddof=1`` is NaN, so every feature on that date is NaN.
+
+    The session's own row is kept even when it is empty. Replacing it with
+    the previous close would write today's prediction log from yesterday's
+    prices and collide with that session's write-once record. Returns
+    ``(panel, n_bars_dropped)``. Attributes (the download report) are kept.
+    """
+    if prices.empty:
+        return prices, 0
+    dates = _bar_calendar_dates(prices.index)
+    session_ts = pd.Timestamp(session).normalize()
+    keep = dates <= session_ts
+    n_dropped = int((~keep).sum())
+    if n_dropped == 0:
+        return prices, 0
+    clipped = prices.loc[np.asarray(keep)].copy()
+    clipped.attrs = dict(prices.attrs)
+    return clipped, n_dropped
+
+
 def apply_session_gate(out_dir: str, prices: pd.DataFrame, session: dt.date) -> None:
     """Hold when the panel does not contain the New York session.
 
@@ -786,6 +830,31 @@ def run_daily(
             "reason": str(exc),
         })
         raise LiveCycleHeld(str(exc)) from exc
+
+    prices, n_future = clip_prices_to_session(prices, session)
+    if n_future:
+        logger.warning(
+            "dropped %d price bar(s) dated after the New York session %s; "
+            "the as-of row is that session, not the trailing bar",
+            n_future,
+            today_tag,
+        )
+    if prices.empty:
+        # Every bar was in the future. The session gate indexes the last
+        # row; an empty frame would be an IndexError instead of a hold.
+        reason = (
+            f"every price bar is dated after the New York session {today_tag}. "
+            "Refusing to score a bar that is not this session."
+        )
+        _write_json(os.path.join(out_dir, f"session_hold_{today_tag}.json"), {
+            "expected_session": today_tag,
+            "held": True,
+            "orders_sent": False,
+            "predictions_logged": False,
+            "n_future_bars_dropped": n_future,
+            "reason": reason,
+        })
+        raise LiveCycleHeld(reason)
 
     report = prices.attrs.get("download_report")
     cache_path = getattr(report, "cache_path", "") if report is not None else ""
