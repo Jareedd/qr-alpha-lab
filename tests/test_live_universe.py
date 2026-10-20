@@ -182,6 +182,83 @@ def test_session_gate_refuses_the_previous_close(tmp_path):
     live.apply_session_gate(str(tmp_path), prices, prices.index[-1].date())
 
 
+def test_a_bar_after_the_session_is_not_scored_as_today():
+    # 2026-10-16 and 2026-10-19: the download returned 641+ symbols, then
+    # live_target_weights raised "only 0 tradable names" on prices.index[-1].
+    # A row dated after the New York session, with a single print, z-scores
+    # to nothing (one observation => std is NaN). The real session is the
+    # previous row. Clipping restores it. The 50-name floor is not the lever;
+    # this panel uses the test floor of 10 and still dies at 0 before the clip.
+    prices = make_panel(n_assets=40, n_days=1300, mode="noise", seed=3)
+    session = prices.index[-1].date()
+    extra = prices.iloc[[-1]].copy()
+    extra.index = pd.DatetimeIndex([prices.index[-1] + pd.offsets.BDay(1)])
+    extra.iloc[0, :] = np.nan
+    extra.iloc[0, 0] = float(prices.iloc[-1, 0])
+    poisoned = pd.concat([prices, extra])
+    poisoned.attrs = dict(prices.attrs)
+
+    with pytest.raises(RuntimeError, match=r"only 0 tradable names today"):
+        live.live_target_weights(
+            poisoned, None, prices.attrs["sectors"], min_names=10
+        )
+
+    clipped, n_dropped = live.clip_prices_to_session(poisoned, session)
+    assert n_dropped == 1
+    assert clipped.index[-1] == prices.index[-1]
+    assert clipped.attrs.get("sectors") == prices.attrs["sectors"]
+    _, preds = live.live_target_weights(
+        clipped, None, prices.attrs["sectors"], min_names=10
+    )
+    assert len(preds) >= 10
+    assert len(preds) > 1
+
+
+def test_an_empty_session_row_is_not_replaced_by_the_previous_close():
+    # The session row itself stays, even with one print. Scoring yesterday
+    # would write today's log from a stale close and collide with write-once.
+    prices = make_panel(n_assets=40, n_days=1300, mode="noise", seed=3)
+    session = prices.index[-1].date()
+    holed = prices.copy()
+    holed.iloc[-1, :] = np.nan
+    holed.iloc[-1, 0] = float(prices.iloc[-2, 0])
+    holed.attrs = dict(prices.attrs)
+
+    clipped, n_dropped = live.clip_prices_to_session(holed, session)
+    assert n_dropped == 0
+    assert len(clipped) == len(holed)
+    assert clipped.index[-1] == holed.index[-1]
+    with pytest.raises(RuntimeError, match=r"only 0 tradable names today"):
+        live.live_target_weights(
+            clipped, None, holed.attrs["sectors"], min_names=10
+        )
+
+
+def test_clip_reads_a_tz_aware_stamp_in_new_york():
+    # 00:30 UTC is still the previous evening in New York. A stamp that is
+    # already tz-aware belongs to that evening, not to the UTC calendar date.
+    # A naive date is whatever the loader already normalized it to.
+    idx = pd.DatetimeIndex([
+        "2026-10-16 16:00",
+        "2026-10-17 00:30",
+    ]).tz_localize("UTC")
+    prices = pd.DataFrame({"AAA": [10.0, 11.0]}, index=idx)
+    clipped, n_dropped = live.clip_prices_to_session(prices, dt.date(2026, 10, 16))
+    assert n_dropped == 0 and len(clipped) == 2
+
+    naive = pd.DataFrame(
+        {"AAA": [10.0, np.nan]},
+        index=pd.to_datetime(["2026-10-16", "2026-10-17"]),
+    )
+    clipped_naive, n_naive = live.clip_prices_to_session(naive, dt.date(2026, 10, 16))
+    assert n_naive == 1
+    assert list(clipped_naive.index) == list(pd.to_datetime(["2026-10-16"]))
+
+    future_only = naive.iloc[[1]]
+    empty, n_all = live.clip_prices_to_session(future_only, dt.date(2026, 10, 16))
+    assert n_all == 1 and empty.empty
+
+
 def test_panel_fingerprint_changes_when_the_asof_close_changes():
     prices = _prices(n_days=5)
     a = live.price_panel_fingerprint(prices)

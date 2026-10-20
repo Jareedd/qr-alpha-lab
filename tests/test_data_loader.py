@@ -245,6 +245,36 @@ def test_duplicate_timestamps_are_deduplicated_last_wins_and_counted(fake_yf, tm
     assert px.attrs["download_report"].duplicate_rows_dropped == 1
 
 
+def test_trailing_nan_duplicate_keeps_the_last_finite_close(fake_yf, tmp_path):
+    # The nightly as-of row is prices.index[-1]. A later re-send of that
+    # timestamp with a NaN close (placeholder / after-hours shell) used to
+    # replace the official print, and one empty session row is "0 tradable
+    # names". The corrected finite copy, sent between the two, must survive.
+    def responder(chunk, start, end):
+        frame = _multi_frame(chunk, DATES)
+        corrected = frame.iloc[[5]].copy()
+        corrected.iloc[0, :] = 999.0
+        placeholder = frame.iloc[[-1]].copy()
+        placeholder.iloc[0, :] = np.nan
+        # Also a NaN re-send of the corrected day, after the 999.
+        nan_after_correction = frame.iloc[[5]].copy()
+        nan_after_correction.iloc[0, :] = np.nan
+        return pd.concat([frame, corrected, nan_after_correction, placeholder])
+
+    fake_yf(responder)
+    px = data.load_prices(["AAPL", "MSFT"], start="2024-01-01", end="2024-02-01",
+                          cache_dir=str(tmp_path))
+    assert px.index.is_unique and px.index.is_monotonic_increasing
+    assert px.loc[DATES[5], "AAPL"] == 999.0
+    assert px.loc[DATES[5], "MSFT"] == 999.0
+    official_last = _multi_frame(["AAPL", "MSFT"], DATES).loc[DATES[-1], ("Close", "AAPL")]
+    # Same seed as _multi_frame, so the pre-placeholder close is this value.
+    assert px.loc[DATES[-1], "AAPL"] == official_last
+    assert np.isfinite(px.loc[DATES[-1], "MSFT"])
+    # Three extra rows in the one chunk (999, NaN-after-999, trailing NaN).
+    assert px.attrs["download_report"].duplicate_rows_dropped == 3
+
+
 def test_duplicate_timestamps_across_chunks_do_not_break_the_concat(fake_yf, tmp_path):
     # Pre-fix, a duplicated index reached pd.concat(axis=1) and took down the
     # whole download with InvalidIndexError -- one bad chunk, zero data.
