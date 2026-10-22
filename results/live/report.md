@@ -1,9 +1,9 @@
-# Live paper-trading monitor — as of 2026-10-21
+# Live paper-trading monitor — as of 2026-10-22
 
 ## Cycle continuity
 - cycles logged: **51** (2026-06-10 → latest 2026-10-15)
 - prediction logs: **50** of 51 cycles (weights-only cycles predate prediction logging and cannot yield live IC)
-- weekdays in window with NO log: **45** — 2026-06-16, 2026-06-19, 2026-07-03, 2026-08-07, 2026-08-11, 2026-08-12, 2026-08-13, 2026-08-14, 2026-08-17, 2026-08-18, 2026-08-19, 2026-08-20, 2026-08-21, 2026-08-24, 2026-08-25, 2026-08-26, 2026-08-27, 2026-08-28, 2026-08-31, 2026-09-01, 2026-09-02, 2026-09-03, 2026-09-04, 2026-09-07, 2026-09-08, 2026-09-09, 2026-09-10, 2026-09-11, 2026-09-14, 2026-09-15, 2026-09-16, 2026-09-17, 2026-09-18, 2026-09-21, 2026-09-22, 2026-09-23, 2026-09-24, 2026-09-25, 2026-09-30, 2026-10-02, 2026-10-13, 2026-10-16, 2026-10-19, 2026-10-20, 2026-10-21  *(NYSE holidays are not modeled and appear here; anything else is a missed cycle and must be explained)*
+- weekdays in window with NO log: **46** — 2026-06-16, 2026-06-19, 2026-07-03, 2026-08-07, 2026-08-11, 2026-08-12, 2026-08-13, 2026-08-14, 2026-08-17, 2026-08-18, 2026-08-19, 2026-08-20, 2026-08-21, 2026-08-24, 2026-08-25, 2026-08-26, 2026-08-27, 2026-08-28, 2026-08-31, 2026-09-01, 2026-09-02, 2026-09-03, 2026-09-04, 2026-09-07, 2026-09-08, 2026-09-09, 2026-09-10, 2026-09-11, 2026-09-14, 2026-09-15, 2026-09-16, 2026-09-17, 2026-09-18, 2026-09-21, 2026-09-22, 2026-09-23, 2026-09-24, 2026-09-25, 2026-09-30, 2026-10-02, 2026-10-13, 2026-10-16, 2026-10-19, 2026-10-20, 2026-10-21, 2026-10-22  *(NYSE holidays are not modeled and appear here; anything else is a missed cycle and must be explained)*
 
 ## Live IC vs backtest IC
 - measurable cycles: **39** of 50 logged (a cycle matures 21 trading days after its as-of date)
@@ -19,7 +19,7 @@
 - price-level changes are mostly benign re-adjustments; *return* changes alter features/labels — they are why backtest and live model literally saw different versions of the same past
 
 ## Realized book P&L (public-price marks, gross, no costs)
-- 90 trading days marked; cumulative -2.79%, ann. vol 15.59%
+- 92 trading days marked; cumulative -3.39%, ann. vol 15.45%
 - cross-check only: fills, costs and shorts-availability live at the broker; the Alpaca equity curve is authoritative
 
 ## Standing limitations
