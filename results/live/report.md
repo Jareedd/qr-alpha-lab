@@ -1,4 +1,4 @@
-# Live paper-trading monitor — as of 2026-10-23
+# Live paper-trading monitor — as of 2026-10-24
 
 ## Cycle continuity
 - cycles logged: **51** (2026-06-10 → latest 2026-10-15)
@@ -19,7 +19,7 @@
 - price-level changes are mostly benign re-adjustments; *return* changes alter features/labels — they are why backtest and live model literally saw different versions of the same past
 
 ## Realized book P&L (public-price marks, gross, no costs)
-- 93 trading days marked; cumulative -3.13%, ann. vol 15.37%
+- 93 trading days marked; cumulative -5.35%, ann. vol 15.81%
 - cross-check only: fills, costs and shorts-availability live at the broker; the Alpaca equity curve is authoritative
 
 ## Standing limitations
