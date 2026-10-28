@@ -1,0 +1,76 @@
+{
+  "compared_to": "2026-10-26",
+  "gap_calendar_days": 1,
+  "gap_weekdays": 1,
+  "is_consecutive_cycle": true,
+  "prior_bar": "2026-10-26",
+  "today_bar": "2026-10-27",
+  "gap_weekdays_bars": 1,
+  "comparison_file": "prices_aaa21af624_2018-01-01_latest_0.0.parquet",
+  "comparison_selection": "explicit",
+  "n_shared_dates": 2216,
+  "n_shared_tickers": 642,
+  "n_cells_compared": 1344297,
+  "n_price_cells_changed": 5087,
+  "frac_price_cells_changed": 0.003784134012052396,
+  "max_abs_rel_price_change": 0.0025844548508255905,
+  "n_return_cells_compared": 1343655,
+  "n_return_cells_changed": 3,
+  "frac_return_cells_changed": 2.2327159873628273e-06,
+  "max_abs_return_change": 0.00014005541309591862,
+  "n_tickers_affected": 8,
+  "n_price_cells_noise_band": 693113,
+  "n_return_cells_noise_band": 820437,
+  "n_cells_appeared": 9,
+  "n_cells_vanished": 1,
+  "top_affected_tickers": [
+    {
+      "ticker": "AA",
+      "n_price_cells": 2216,
+      "max_abs_rel_change": 0.0025844548508255905,
+      "n_return_cells": 0
+    },
+    {
+      "ticker": "CE",
+      "n_price_cells": 2216,
+      "max_abs_rel_change": 0.000624527813951059,
+      "n_return_cells": 0
+    },
+    {
+      "ticker": "GEV",
+      "n_price_cells": 648,
+      "max_abs_rel_change": 0.0005850412409214023,
+      "n_return_cells": 0
+    },
+    {
+      "ticker": "O",
+      "n_price_cells": 3,
+      "max_abs_rel_change": 1.1378770128356308e-06,
+      "n_return_cells": 0
+    },
+    {
+      "ticker": "CSRA",
+      "n_price_cells": 1,
+      "max_abs_rel_change": 0.00014009185292207516,
+      "n_return_cells": 1
+    },
+    {
+      "ticker": "PCL",
+      "n_price_cells": 1,
+      "max_abs_rel_change": 4.313445555181872e-06,
+      "n_return_cells": 1
+    },
+    {
+      "ticker": "SLG",
+      "n_price_cells": 1,
+      "max_abs_rel_change": 1.07091593415376e-06,
+      "n_return_cells": 0
+    },
+    {
+      "ticker": "SPLS",
+      "n_price_cells": 1,
+      "max_abs_rel_change": 5.3904991622610865e-06,
+      "n_return_cells": 1
+    }
+  ]
+}
