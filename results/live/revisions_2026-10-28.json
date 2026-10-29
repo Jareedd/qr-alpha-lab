@@ -1,0 +1,64 @@
+{
+  "compared_to": "2026-10-27",
+  "gap_calendar_days": 1,
+  "gap_weekdays": 1,
+  "is_consecutive_cycle": true,
+  "prior_bar": "2026-10-27",
+  "today_bar": "2026-10-28",
+  "gap_weekdays_bars": 1,
+  "comparison_file": "prices_aaa21af624_2018-01-01_latest_0.0.parquet",
+  "comparison_selection": "explicit",
+  "n_shared_dates": 2217,
+  "n_shared_tickers": 642,
+  "n_cells_compared": 1344940,
+  "n_price_cells_changed": 4440,
+  "frac_price_cells_changed": 0.003301262509851741,
+  "max_abs_rel_price_change": 0.01430928951838173,
+  "n_return_cells_compared": 1344292,
+  "n_return_cells_changed": 2,
+  "frac_return_cells_changed": 1.4877720019162503e-06,
+  "max_abs_return_change": 4.008639113595169e-05,
+  "n_tickers_affected": 6,
+  "n_price_cells_noise_band": 692783,
+  "n_return_cells_noise_band": 818667,
+  "n_cells_appeared": 4,
+  "n_cells_vanished": 0,
+  "top_affected_tickers": [
+    {
+      "ticker": "CLX",
+      "n_price_cells": 2217,
+      "max_abs_rel_change": 0.01430928951838173,
+      "n_return_cells": 0
+    },
+    {
+      "ticker": "FAST",
+      "n_price_cells": 2217,
+      "max_abs_rel_change": 0.005044103247587528,
+      "n_return_cells": 0
+    },
+    {
+      "ticker": "O",
+      "n_price_cells": 3,
+      "max_abs_rel_change": 1.1378757179825172e-06,
+      "n_return_cells": 0
+    },
+    {
+      "ticker": "CSRA",
+      "n_price_cells": 1,
+      "max_abs_rel_change": 4.011690294758452e-05,
+      "n_return_cells": 1
+    },
+    {
+      "ticker": "PCL",
+      "n_price_cells": 1,
+      "max_abs_rel_change": 2.1080110825799636e-06,
+      "n_return_cells": 1
+    },
+    {
+      "ticker": "SLG",
+      "n_price_cells": 1,
+      "max_abs_rel_change": 1.0773565057853318e-06,
+      "n_return_cells": 0
+    }
+  ]
+}
