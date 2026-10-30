@@ -1,12 +1,12 @@
-# Live paper-trading monitor — as of 2026-10-29
+# Live paper-trading monitor — as of 2026-10-30
 
 ## Cycle continuity
-- cycles logged: **54** (2026-06-10 → latest 2026-10-28)
-- prediction logs: **53** of 54 cycles (weights-only cycles predate prediction logging and cannot yield live IC)
-- weekdays in window with NO log: **48** — 2026-06-16, 2026-06-19, 2026-07-03, 2026-08-07, 2026-08-11, 2026-08-12, 2026-08-13, 2026-08-14, 2026-08-17, 2026-08-18, 2026-08-19, 2026-08-20, 2026-08-21, 2026-08-24, 2026-08-25, 2026-08-26, 2026-08-27, 2026-08-28, 2026-08-31, 2026-09-01, 2026-09-02, 2026-09-03, 2026-09-04, 2026-09-07, 2026-09-08, 2026-09-09, 2026-09-10, 2026-09-11, 2026-09-14, 2026-09-15, 2026-09-16, 2026-09-17, 2026-09-18, 2026-09-21, 2026-09-22, 2026-09-23, 2026-09-24, 2026-09-25, 2026-09-30, 2026-10-02, 2026-10-13, 2026-10-16, 2026-10-19, 2026-10-20, 2026-10-21, 2026-10-22, 2026-10-23, 2026-10-29  *(NYSE holidays are not modeled and appear here; anything else is a missed cycle and must be explained)*
+- cycles logged: **55** (2026-06-10 → latest 2026-10-29)
+- prediction logs: **54** of 55 cycles (weights-only cycles predate prediction logging and cannot yield live IC)
+- weekdays in window with NO log: **48** — 2026-06-16, 2026-06-19, 2026-07-03, 2026-08-07, 2026-08-11, 2026-08-12, 2026-08-13, 2026-08-14, 2026-08-17, 2026-08-18, 2026-08-19, 2026-08-20, 2026-08-21, 2026-08-24, 2026-08-25, 2026-08-26, 2026-08-27, 2026-08-28, 2026-08-31, 2026-09-01, 2026-09-02, 2026-09-03, 2026-09-04, 2026-09-07, 2026-09-08, 2026-09-09, 2026-09-10, 2026-09-11, 2026-09-14, 2026-09-15, 2026-09-16, 2026-09-17, 2026-09-18, 2026-09-21, 2026-09-22, 2026-09-23, 2026-09-24, 2026-09-25, 2026-09-30, 2026-10-02, 2026-10-13, 2026-10-16, 2026-10-19, 2026-10-20, 2026-10-21, 2026-10-22, 2026-10-23, 2026-10-30  *(NYSE holidays are not modeled and appear here; anything else is a missed cycle and must be explained)*
 
 ## Live IC vs backtest IC
-- measurable cycles: **41** of 53 logged (a cycle matures 21 trading days after its as-of date)
+- measurable cycles: **41** of 54 logged (a cycle matures 21 trading days after its as-of date)
 - live mean rank IC: **-0.0835** (t_NW = -2.12)
 - backtest mean rank IC (same config, 2010→2026 OOS): **+0.0225** (t_NW = 1.91)
 
@@ -15,13 +15,13 @@
 - purpose: if the model's live IC sags vs backtest, the baseline's own live-vs-backtest gap separates 'model decayed' from 'period was hostile to everything'
 
 ## Data revisions (vendor rewriting the shared past)
-- snapshot pairs compared: **52**; latest (2026-10-27 → cycle): 4,440 of 1,344,940 shared price cells changed (0.3301%), **2 return cells** changed (max |Δreturn| 4.01e-05)
+- snapshot pairs compared: **53**; latest (2026-10-28 → cycle): 1,670 of 1,345,573 shared price cells changed (0.1241%), **1 return cells** changed (max |Δreturn| 3.20e-05)
 - price-level changes are mostly benign re-adjustments; *return* changes alter features/labels — they are why backtest and live model literally saw different versions of the same past
 
 ## Realized book P&L (public-price marks, gross, no costs)
-- 97 trading days marked; cumulative -2.57%, ann. vol 15.76%
+- 98 trading days marked; cumulative -2.83%, ann. vol 15.68%
 - cross-check only: fills, costs and shorts-availability live at the broker; the Alpaca equity curve is authoritative
-- **orders paused on 3 logged cycle(s):** those weight files are the unsent target. Book P&L keeps the last submitted book, so a pause is not a rebalance.
+- **orders paused on 4 logged cycle(s):** those weight files are the unsent target. Book P&L keeps the last submitted book, so a pause is not a rebalance.
 
 ## Standing limitations
 - live IC residualizes vs the equal-weight mean of logged names, not the full PIT universe (close, not identical, market proxy)
