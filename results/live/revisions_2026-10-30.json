@@ -1,0 +1,88 @@
+{
+  "compared_to": "2026-10-29",
+  "gap_calendar_days": 1,
+  "gap_weekdays": 1,
+  "is_consecutive_cycle": true,
+  "prior_bar": "2026-10-29",
+  "today_bar": "2026-10-30",
+  "gap_weekdays_bars": 1,
+  "comparison_file": "prices_107785916d_2018-01-01_latest_0.0.parquet",
+  "comparison_selection": "explicit",
+  "n_shared_dates": 2219,
+  "n_shared_tickers": 642,
+  "n_cells_compared": 1346209,
+  "n_price_cells_changed": 33914,
+  "frac_price_cells_changed": 0.02519222498141076,
+  "max_abs_rel_price_change": 0.011694899909940104,
+  "n_return_cells_compared": 1345568,
+  "n_return_cells_changed": 2,
+  "frac_return_cells_changed": 1.4863611500868035e-06,
+  "max_abs_return_change": 9.715866194781597e-05,
+  "n_tickers_affected": 20,
+  "n_price_cells_noise_band": 674207,
+  "n_return_cells_noise_band": 825758,
+  "n_cells_appeared": 9,
+  "n_cells_vanished": 1,
+  "top_affected_tickers": [
+    {
+      "ticker": "AES",
+      "n_price_cells": 2219,
+      "max_abs_rel_change": 0.011694899909940104,
+      "n_return_cells": 0
+    },
+    {
+      "ticker": "AOS",
+      "n_price_cells": 2219,
+      "max_abs_rel_change": 0.005985791568452803,
+      "n_return_cells": 0
+    },
+    {
+      "ticker": "CASY",
+      "n_price_cells": 2219,
+      "max_abs_rel_change": 0.000959697430268136,
+      "n_return_cells": 0
+    },
+    {
+      "ticker": "CFG",
+      "n_price_cells": 2219,
+      "max_abs_rel_change": 0.007908229428243874,
+      "n_return_cells": 0
+    },
+    {
+      "ticker": "COST",
+      "n_price_cells": 2219,
+      "max_abs_rel_change": 0.0014764333666822393,
+      "n_return_cells": 0
+    },
+    {
+      "ticker": "HUM",
+      "n_price_cells": 2219,
+      "max_abs_rel_change": 0.002120209821653063,
+      "n_return_cells": 0
+    },
+    {
+      "ticker": "LNT",
+      "n_price_cells": 2219,
+      "max_abs_rel_change": 0.007569872207282113,
+      "n_return_cells": 0
+    },
+    {
+      "ticker": "MS",
+      "n_price_cells": 2219,
+      "max_abs_rel_change": 0.006053279070408868,
+      "n_return_cells": 0
+    },
+    {
+      "ticker": "NI",
+      "n_price_cells": 2219,
+      "max_abs_rel_change": 0.006704501639780758,
+      "n_return_cells": 0
+    },
+    {
+      "ticker": "O",
+      "n_price_cells": 2219,
+      "max_abs_rel_change": 0.004756302207279406,
+      "n_return_cells": 0
+    }
+  ]
+}
