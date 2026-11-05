@@ -1,0 +1,88 @@
+{
+  "compared_to": "2026-11-03",
+  "gap_calendar_days": 1,
+  "gap_weekdays": 1,
+  "is_consecutive_cycle": true,
+  "prior_bar": "2026-11-03",
+  "today_bar": "2026-11-04",
+  "gap_weekdays_bars": 1,
+  "comparison_file": "prices_107785916d_2018-01-01_latest_0.0.parquet",
+  "comparison_selection": "explicit",
+  "n_shared_dates": 2222,
+  "n_shared_tickers": 642,
+  "n_cells_compared": 1347245,
+  "n_price_cells_changed": 19846,
+  "frac_price_cells_changed": 0.01473080248952492,
+  "max_abs_rel_price_change": 0.010357355267502477,
+  "n_return_cells_compared": 1346603,
+  "n_return_cells_changed": 10,
+  "frac_return_cells_changed": 7.426093659378451e-06,
+  "max_abs_return_change": 0.010304511451736498,
+  "n_tickers_affected": 15,
+  "n_price_cells_noise_band": 681439,
+  "n_return_cells_noise_band": 820288,
+  "n_cells_appeared": 1,
+  "n_cells_vanished": 0,
+  "top_affected_tickers": [
+    {
+      "ticker": "BRO",
+      "n_price_cells": 2222,
+      "max_abs_rel_change": 0.002538704849117668,
+      "n_return_cells": 0
+    },
+    {
+      "ticker": "EQT",
+      "n_price_cells": 2222,
+      "max_abs_rel_change": 0.0031343397089618197,
+      "n_return_cells": 0
+    },
+    {
+      "ticker": "BMY",
+      "n_price_cells": 2199,
+      "max_abs_rel_change": 0.010357355267502477,
+      "n_return_cells": 1
+    },
+    {
+      "ticker": "CSCO",
+      "n_price_cells": 2199,
+      "max_abs_rel_change": 0.0038774916806494364,
+      "n_return_cells": 1
+    },
+    {
+      "ticker": "IEX",
+      "n_price_cells": 2199,
+      "max_abs_rel_change": 0.0031867625712818093,
+      "n_return_cells": 1
+    },
+    {
+      "ticker": "ROP",
+      "n_price_cells": 2199,
+      "max_abs_rel_change": 0.0025168394699823793,
+      "n_return_cells": 1
+    },
+    {
+      "ticker": "PM",
+      "n_price_cells": 2199,
+      "max_abs_rel_change": 0.008576258187608099,
+      "n_return_cells": 1
+    },
+    {
+      "ticker": "RSG",
+      "n_price_cells": 2199,
+      "max_abs_rel_change": 0.0032481995592810176,
+      "n_return_cells": 1
+    },
+    {
+      "ticker": "SYY",
+      "n_price_cells": 2199,
+      "max_abs_rel_change": 0.007123114559857813,
+      "n_return_cells": 1
+    },
+    {
+      "ticker": "O",
+      "n_price_cells": 3,
+      "max_abs_rel_change": 1.5039551614082214e-06,
+      "n_return_cells": 0
+    }
+  ]
+}
