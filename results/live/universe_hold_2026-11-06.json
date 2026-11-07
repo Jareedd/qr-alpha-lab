@@ -1,0 +1,505 @@
+{
+  "asof": "2026-11-06",
+  "held": true,
+  "orders_sent": false,
+  "n_scored": 433,
+  "n_prior": 500,
+  "prior_asof": "2026-11-05",
+  "n_eligible": 503,
+  "n_missing_close": 70,
+  "n_feature_gap": 0,
+  "n_warmup": 0,
+  "n_missing_from_panel": 0,
+  "min_frac": 0.95,
+  "reason": "scored 433 < 95% of prior cycle 2026-11-05 (500 names); scored 433 < 95% of scoreable members (503 = scored + 70 missing_close + 0 feature_gap; 0 warmup and 0 missing_from_panel excluded)",
+  "dropped": [
+    {
+      "ticker": "ABBV",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "ABNB",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "ALLE",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "AMCR",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "ANET",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "APP",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "ARES",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "BE",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "CARR",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "CDW",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "CEG",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "CFG",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "COIN",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "CRWD",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "CVNA",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "DASH",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "DDOG",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "DELL",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "DOW",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "EXE",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "FANG",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "FDXF",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "FOX",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "FOXA",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "FTV",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "GDDY",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "GEHC",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "GEV",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "GOOG",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "HLT",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "HONA",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "HOOD",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "HPE",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "HUBB",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "INVH",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "IQV",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "IR",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "KEYS",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "KHC",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "LITE",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "META",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "MRNA",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "NCLH",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "NOW",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "NWS",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "NWSA",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "OKTA",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "OTIS",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "P",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "PANW",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "PLTR",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "PSX",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "PYPL",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "Q",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "RDDT",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "SNDK",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "SOLV",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "SW",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "SYF",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "TWLO",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "UBER",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "VEEV",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "VICI",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "VLTO",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "VRT",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "VST",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "VYLR",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "WDAY",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "XYZ",
+      "reason": "missing_close"
+    },
+    {
+      "ticker": "ZTS",
+      "reason": "missing_close"
+    }
+  ],
+  "price_panel": {
+    "n_rows": 2225,
+    "n_cols": 643,
+    "first": "2018-01-02",
+    "last": "2026-11-06",
+    "asof_closes": 525,
+    "sha256": "c3ee9128ebe85e09d0523b54f84c3ebe3ca16bfda4d980e269378169cfd8a7be"
+  },
+  "download_report": {
+    "field": "Close",
+    "requested": 824,
+    "returned": 643,
+    "missing": [
+      "ABMD",
+      "ACE",
+      "ADS",
+      "AET",
+      "AGN",
+      "AKS",
+      "ALTR",
+      "ALXN",
+      "ANDV",
+      "ANR",
+      "ANSS",
+      "APOL",
+      "ARG",
+      "ARNC",
+      "ATVI",
+      "AVP",
+      "AYE",
+      "BCR",
+      "BHI",
+      "BIG",
+      "BJS",
+      "BMC",
+      "BMS",
+      "BRCM",
+      "BXLT",
+      "CA",
+      "CBE",
+      "CCE",
+      "CDAY",
+      "CELG",
+      "CEPH",
+      "CERN",
+      "CFN",
+      "CHK",
+      "CMA",
+      "CMCSK",
+      "COL",
+      "COV",
+      "CPGX",
+      "CSC",
+      "CTLT",
+      "CTRA",
+      "CTXS",
+      "CVC",
+      "CVH",
+      "CXO",
+      "DAY",
+      "DF",
+      "DFS",
+      "DISCA",
+      "DISCK",
+      "DISH",
+      "DNB",
+      "DNR",
+      "DO",
+      "DPS",
+      "DRE",
+      "DTV",
+      "DWDP",
+      "EK",
+      "ENDP",
+      "ESRX",
+      "ESV",
+      "ETFC",
+      "EVHC",
+      "FBHS",
+      "FDO",
+      "FII",
+      "FL",
+      "FLIR",
+      "FRC",
+      "FRX",
+      "FTR",
+      "GAS",
+      "GGP",
+      "GMCR",
+      "GPS",
+      "GR",
+      "HAR",
+      "HBI",
+      "HCBK",
+      "HES",
+      "HFC",
+      "HNZ",
+      "HOLX",
+      "HOT",
+      "HSP",
+      "IGT",
+      "IPG",
+      "JCP",
+      "JDSU",
+      "JNPR",
+      "JNS",
+      "JOY",
+      "JWN",
+      "K",
+      "KFT",
+      "KRFT",
+      "KSU",
+      "LLL",
+      "LLTC",
+      "LM",
+      "LO",
+      "LSI",
+      "LVLT",
+      "LXK",
+      "MDP",
+      "MEE",
+      "MFE",
+      "MHS",
+      "MIL",
+      "MJN",
+      "MNK",
+      "MOLX",
+      "MON",
+      "MRO",
+      "MWW",
+      "MXIM",
+      "NBL",
+      "NLSN",
+      "NOVL",
+      "NSM",
+      "NVLS",
+      "NYX",
+      "ODP",
+      "PBCT",
+      "PCP",
+      "PDCO",
+      "PETM",
+      "PGN",
+      "PLL",
+      "PTV",
+      "PXD",
+      "QEP",
+      "RAI",
+      "RDC",
+      "RHT",
+      "RRD",
+      "RSH",
+      "RTN",
+      "RX",
+      "SAI",
+      "SCG",
+      "SEE",
+      "SIAL",
+      "SIVB",
+      "SNI",
+      "SRCL",
+      "STJ",
+      "STR",
+      "SVU",
+      "SWN",
+      "SWY",
+      "TEG",
+      "TFCF",
+      "TFCFA",
+      "TGNA",
+      "TIE",
+      "TIF",
+      "TLAB",
+      "TSS",
+      "TWC",
+      "TWTR",
+      "TWX",
+      "TYC",
+      "VAR",
+      "VIAB",
+      "WBA",
+      "WCG",
+      "WFM",
+      "WFR",
+      "WIN",
+      "WLTW",
+      "WPX",
+      "WYN",
+      "X",
+      "XEC",
+      "XL",
+      "XLNX",
+      "XTO",
+      "YHOO"
+    ],
+    "dropped_low_coverage": [],
+    "duplicate_rows_dropped": 0,
+    "chunks_total": 9,
+    "chunks_empty": 0,
+    "chunks_unusable": 0,
+    "rows": 2225,
+    "coverage": 0.7803,
+    "source": "download",
+    "cache_path": "data_cache/live_2026-11-06/prices_5067c9d7c7_2018-01-01_latest_0.0.parquet",
+    "cache_age_days": null,
+    "warnings": []
+  },
+  "predictions_logged": false
+}
